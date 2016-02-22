@@ -5,17 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends ListActivity {
-    Intent intent;
-    TextView questionId;
+    Intent intent; // maybe not needed
+    TextView questionId; // maybe not needed
+    ListView lvQuestions;
 
     DBFunc dbFunc = new DBFunc(this);
 
@@ -24,36 +25,37 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ArrayList<HashMap<String,String>> questionList = dbFunc.getAllQuestions();
+        try {
+            dbFunc.createDatabase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        if(questionList.size() != 0) {
-            ListView listView = getListView();
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ArrayList<HashMap<String, String>> listQuestions = dbFunc.getAllQuestions();
+
+        ArrayList<String> allQuestionNames = dbFunc.getAllQuestionNames();
+        if(listQuestions.size() != 0){
+            lvQuestions = getListView();
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                    this,
+                    android.R.layout.simple_list_item_1,
+                    android.R.id.text1,allQuestionNames
+            );
+
+            lvQuestions.setAdapter(adapter);
+
+            lvQuestions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    questionId = (TextView) view.findViewById(R.id.questionId);
-                    String questionIdValue = questionId.getText().toString();
-
-                    Intent theIntent = new Intent(getApplication(), ViewQuestion.class);
-
-                    theIntent.putExtra("questionId", questionIdValue);
-
-                    startActivity(theIntent);
+                    // TODO open next page with question and options
                 }
             });
         }
-
-        ListAdapter adapter = new SimpleAdapter(
-                MainActivity.this, questionList, R.layout.question_entry,
-                new String[] {"questionId", "question"},
-                new int[] {R.id.questionId, R.id.question});
-        setListAdapter(adapter);
     }
     /*
     public void getAnswer(){
 
     }
     */
-
-
 }

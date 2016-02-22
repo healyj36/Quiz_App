@@ -11,6 +11,7 @@
 
     <TextView
         android:id="@+id/question"
+        android:text="que"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_5dp"
@@ -20,6 +21,7 @@
 
     <TextView
         android:id="@+id/option1"
+        android:text="op1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_5dp"
@@ -29,6 +31,7 @@
 
     <TextView
         android:id="@+id/option2"
+        android:text="op2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_5dp"
@@ -38,6 +41,7 @@
 
     <TextView
         android:id="@+id/option3"
+        android:text="op3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_5dp"
@@ -47,25 +51,12 @@
 
     <TextView
         android:id="@+id/option4"
+        android:text="op4"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_5dp"
         android:textColor="#444444"
         android:textSize="20sp"
         android:textStyle="bold" />
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <Button
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="goBack"
-            android:padding="@dimen/padding_5dp"
-            android:text="@string/goBack"
-            android:layout_column="0" />
-    </TableRow>
 
 </TableLayout>
