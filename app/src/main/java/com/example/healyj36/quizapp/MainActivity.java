@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends ListActivity {
-    Intent intent; // maybe not needed
-    TextView questionId; // maybe not needed
+    Intent intent; // TODO delete. maybe not needed
+    TextView questionId; // TODO delete. maybe not needed
     ListView lvQuestions;
 
     DBFunc dbFunc = new DBFunc(this);

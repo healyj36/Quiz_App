@@ -25,7 +25,8 @@ public class DBFunc extends SQLiteOpenHelper {
 
     public static String DB_NAME = "questions.db";
     public static final int DB_VERSION = 1;
-    public static final String TB_NAME = "questions";
+    public static final String TB_NAME1 = "questions";
+    public static final String TB_NAME2 = "answers";
 
     private SQLiteDatabase myDB;
     private Context context;
@@ -130,7 +131,7 @@ public class DBFunc extends SQLiteOpenHelper {
         Cursor c;
 
         try {
-            c = db.rawQuery("SELECT * FROM " + TB_NAME , null);
+            c = db.rawQuery("SELECT * FROM " + TB_NAME1 , null);
             if(c == null) return null;
 
             String q;
@@ -199,7 +200,7 @@ public class DBFunc extends SQLiteOpenHelper {
     public ArrayList<String> getAllQuestionNames() {
         ArrayList<String> listQuestion = new ArrayList<String>();
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM " + TB_NAME;
+        String selectQuery = "SELECT * FROM " + TB_NAME1;
         Cursor c = db.rawQuery(selectQuery, null);
 
         if(c.moveToFirst()) {
@@ -215,7 +216,7 @@ public class DBFunc extends SQLiteOpenHelper {
     public ArrayList<String> findOptionsByQuestion(String ques) {
         ArrayList<String> listOptions = new ArrayList<String>();
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM " + TB_NAME + " WHERE question='" + ques + "'";
+        String selectQuery = "SELECT * FROM " + TB_NAME1 + " WHERE question='" + ques + "'";
         Cursor c = db.rawQuery(selectQuery, null);
         String q;
 
@@ -233,5 +234,34 @@ public class DBFunc extends SQLiteOpenHelper {
         }
         db.close();
         return listOptions;
+    }
+
+    public boolean isAnswer(String ques, final String chosenAnswer) {
+        boolean isAnswer;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryForId = "SELECT questionId FROM " + TB_NAME1 + " WHERE question='" + ques + "'";
+        // e.g. SELECT questionId FROM questions WHERE question='Which material is most dense?'
+        Cursor c = db.rawQuery(queryForId, null);
+        String id = "none";
+        // if id is not changed to the questionId value, then queryForAnswer will have no matches in db
+
+        if(c.moveToFirst()) {
+            id = c.getString(0);
+        } while(c.moveToNext());
+
+        String queryForAnswer = "SELECT answer FROM " + TB_NAME2 + " WHERE questionId='" + id + "'";
+        // e.g. SELECT answer FROM answers WHERE questionId='1'
+
+        c = db.rawQuery(queryForAnswer, null);
+        String correctAnswer = null;
+        if(c.moveToFirst()) {
+            correctAnswer = c.getString(0);
+            // (1) as second column
+            // first column is questionId
+            // second column is answer
+        } while(c.moveToNext());
+
+        isAnswer = (correctAnswer.equals(chosenAnswer));
+        return isAnswer;
     }
 }

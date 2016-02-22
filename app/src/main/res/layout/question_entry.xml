@@ -19,7 +19,7 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <TextView
+    <Button
         android:id="@+id/option1_button_text_view"
         android:text="op1"
         android:layout_width="fill_parent"
@@ -27,9 +27,9 @@
         android:padding="@dimen/padding_5dp"
         android:textColor="#444444"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:onClick="getAnswer" />
 
-    <TextView
+    <Button
         android:id="@+id/option2_button_text_view"
         android:text="op2"
         android:layout_width="fill_parent"
@@ -37,9 +37,9 @@
         android:padding="@dimen/padding_5dp"
         android:textColor="#444444"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:onClick="getAnswer"/>
 
-    <TextView
+    <Button
         android:id="@+id/option3_button_text_view"
         android:text="op3"
         android:layout_width="fill_parent"
@@ -47,9 +47,9 @@
         android:padding="@dimen/padding_5dp"
         android:textColor="#444444"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:onClick="getAnswer"/>
 
-    <TextView
+    <Button
         android:id="@+id/option4_button_text_view"
         android:text="op4"
         android:layout_width="fill_parent"
@@ -57,6 +57,6 @@
         android:padding="@dimen/padding_5dp"
         android:textColor="#444444"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:onClick="getAnswer"/>
 
 </TableLayout>
