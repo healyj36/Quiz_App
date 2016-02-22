@@ -50,8 +50,7 @@ public class ViewQuestion extends Activity {
         String ques = t.getText().toString();
 
         boolean isAnswer = dbFunc.isAnswer(ques, chosenAnswer);
-        String isAnswserString = String.valueOf(isAnswer);
-
-        Toast.makeText(getApplicationContext(), isAnswserString, Toast.LENGTH_SHORT).show();
+        TextView a = (TextView) findViewById(R.id.chosen_answer_text_view);
+        a.setText(String.valueOf(isAnswer));
     }
 }
