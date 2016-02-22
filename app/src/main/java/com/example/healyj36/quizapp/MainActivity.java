@@ -49,6 +49,19 @@ public class MainActivity extends ListActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     // TODO open next page with question and options
+                    Intent viewQues = new Intent(MainActivity.this, ViewQuestion.class);
+
+                    // final int result = 1; // signal
+
+                    String questionName = (String) parent.getItemAtPosition(position);
+
+                    viewQues.putExtra("questionKey", questionName);
+
+                    // call activity to run and don't expect data to be sent back
+                    startActivity(viewQues);
+
+                    // call activity to run and retrieve data back
+                    // startActivityForResult(viewQues, result);
                 }
             });
         }

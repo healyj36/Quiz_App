@@ -208,6 +208,30 @@ public class DBFunc extends SQLiteOpenHelper {
                 listQuestion.add(q);
             } while(c.moveToNext());
         }
+        db.close();
         return listQuestion;
+    }
+
+    public ArrayList<String> findOptionsByQuestion(String ques) {
+        ArrayList<String> listOptions = new ArrayList<String>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + TB_NAME + " WHERE question='" + ques + "'";
+        Cursor c = db.rawQuery(selectQuery, null);
+        String q;
+
+        if(c.moveToFirst()) {
+            do {
+                q = c.getString(2);
+                listOptions.add(q);
+                q = c.getString(3);
+                listOptions.add(q);
+                q = c.getString(4);
+                listOptions.add(q);
+                q = c.getString(5);
+                listOptions.add(q);
+            } while(c.moveToNext());
+        }
+        db.close();
+        return listOptions;
     }
 }
