@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -52,5 +51,11 @@ public class ViewQuestion extends Activity {
         boolean isAnswer = dbFunc.isAnswer(ques, chosenAnswer);
         TextView a = (TextView) findViewById(R.id.chosen_answer_text_view);
         a.setText(String.valueOf(isAnswer));
+
+
+        // this.finish(); //to close activity when button is pressed (goes back to main activity)
+        /*
+        TODO function to add to record of previous correct or incorrect answers
+         */
     }
 }
