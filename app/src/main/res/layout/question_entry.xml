@@ -1,71 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/questionId"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/question"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_5dp"
-        android:textColor="#444444"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/option1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_5dp"
-        android:textColor="#444444"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/option2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_5dp"
-        android:textColor="#444444"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/option3"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_5dp"
-        android:textColor="#444444"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/option4"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_5dp"
-        android:textColor="#444444"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TableRow
+    <LinearLayout android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/question_id_text_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/question_text_view"
+            android:text="@string/question_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="@dimen/padding_5dp"
+            android:gravity="center_vertical|center"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <Button
-            android:id="@+id/backButton"
+            android:id="@+id/option1_button_text_view"
+            android:text="@string/option1_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="goBack"
             android:padding="@dimen/padding_5dp"
-            android:text="@string/goBack"
-            android:layout_column="0" />
-    </TableRow>
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:onClick="getAnswer" />
 
-</TableLayout>
+        <Button
+            android:id="@+id/option2_button_text_view"
+            android:text="@string/option2_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_5dp"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:onClick="getAnswer"/>
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/option3_button_text_view"
+            android:text="@string/option3_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_5dp"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:onClick="getAnswer"/>
+
+        <Button
+            android:id="@+id/option4_button_text_view"
+            android:text="@string/option4_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_5dp"
+            android:textColor="#444444"
+            android:textSize="20sp"
+            android:onClick="getAnswer"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/chosen_answer_text_view"
+            android:text="@string/no_answer_chosen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</LinearLayout>

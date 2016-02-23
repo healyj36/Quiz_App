@@ -4,20 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
  * Created by Jordan on 20/02/2016.
  */
-public class ViewQuestion extends Activity {
-    TextView question;
-    TextView option1;
-    TextView option2;
-    TextView option3;
-    TextView option4;
 
+
+public class ViewQuestion extends Activity {
     DBFunc dbFunc = new DBFunc(this);
 
     @Override
@@ -25,34 +22,40 @@ public class ViewQuestion extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_entry);
 
-        question = (TextView) findViewById(R.id.question);
-        option1 = (TextView) findViewById(R.id.option1);
-        option2 = (TextView) findViewById(R.id.option2);
-        option3 = (TextView) findViewById(R.id.option3);
-        option4 = (TextView) findViewById(R.id.option4);
+        Intent calledFromMain = getIntent();
 
-        Intent theIntent = getIntent();
+        String questionChosen = calledFromMain.getExtras().getString("questionKey");
 
-        String questionId = theIntent.getStringExtra("questionId");
+        TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
+        question_text_view.setText(questionChosen);
 
-        HashMap<String,String> questionList = dbFunc.getQuestionInfo(questionId);
+        ArrayList<String> options = dbFunc.findOptionsByQuestion(questionChosen);
 
-        if(questionList.size() != 0) {
-            // put the values questionList returned into the textviews
-            question.setText(questionList.get("question"));
-            option1.setText(questionList.get("option1"));
-            option2.setText(questionList.get("option2"));
-            option3.setText(questionList.get("option3"));
-            option4.setText(questionList.get("option4"));
-        }
+        TextView option1 = (TextView) findViewById(R.id.option1_button_text_view);
+        option1.setText(options.get(0));
+        TextView option2 = (TextView) findViewById(R.id.option2_button_text_view);
+        option2.setText(options.get(1));
+        TextView option3 = (TextView) findViewById(R.id.option3_button_text_view);
+        option3.setText(options.get(2));
+        TextView option4 = (TextView) findViewById(R.id.option4_button_text_view);
+        option4.setText(options.get(3));
+
     }
 
-    public void callMainActivity(View view) {
-        Intent objIntent = new Intent(getApplication(), MainActivity.class);
-        startActivity(objIntent);
-    }
+    public void getAnswer(View view) {
+        String chosenAnswer = ((Button) view).getText().toString();
 
-    public void goBack(View view) {
-        this.callMainActivity(view);
+        TextView t = (TextView) findViewById(R.id.question_text_view);
+        String ques = t.getText().toString();
+
+        boolean isAnswer = dbFunc.isAnswer(ques, chosenAnswer);
+        TextView a = (TextView) findViewById(R.id.chosen_answer_text_view);
+        a.setText(String.valueOf(isAnswer));
+
+
+        // this.finish(); //to close activity when button is pressed (goes back to main activity)
+        /*
+        TODO function to add to record of previous correct or incorrect answers
+         */
     }
 }
