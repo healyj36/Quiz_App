@@ -15,4 +15,5 @@
     <string name="settings_text_view">Settings</string>
     <string name="infinite_game_mode_description">In this game mode, you will have to try your best to answer as many questions correctly in a row as possible. The game will exit when either, you answer a question incorrectly or you\'ve answered all the questions correctly</string>
     <string name="start_text_view">Start</string>
+    <string name="select_number_of_questions_message">Please select the number of questions below</string>
 </resources>
