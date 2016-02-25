@@ -1,38 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#444444" >
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/app_title"
+        android:text="@string/app_name"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:textSize="@dimen/title_size"
+        android:gravity="center_vertical|center"
+        />
 
-        <TextView
-            android:id="@+id/questionsTitleTextView"
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center">
+
+        <Button
+            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:id="@+id/infinte_game_mode"
+            android:text="@string/infinite_game_mode_text_view"
+            android:onClick="goToInfiniteGameMode"/>
+
+        <Button
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding_5dp"
-            android:text="@string/allQuestions"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#FFF"
-            android:layout_weight="1" />
-    </TableRow>
+            android:layout_width="wrap_content"
+            android:id="@+id/all_questions_game_mode"
+            android:text="@string/all_questions_text_view"
+            android:onClick="goToAllQuestions"/>
 
-
-    <TableRow
-        android:id="@+id/tableRow2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <ListView
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
+        <Button
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
-        </ListView>
-    </TableRow>
-</TableLayout>
+            android:layout_width="wrap_content"
+            android:id="@+id/settings"
+            android:text="@string/settings_text_view"
+            android:onClick="goToSettings"/>
+
+    </LinearLayout>
+</LinearLayout>

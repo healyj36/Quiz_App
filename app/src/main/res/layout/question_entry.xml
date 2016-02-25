@@ -85,10 +85,23 @@
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:weightSum="1">
+
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="@dimen/padding_5dp"
+            android:paddingRight="@dimen/padding_5dp"
+            android:id="@+id/countdown_timer"
+            android:progress="0"
+            android:max="9"/>
+
         <TextView
             android:id="@+id/chosen_answer_text_view"
-            android:text="@string/no_answer_chosen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
