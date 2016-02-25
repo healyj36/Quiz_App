@@ -1,6 +1,8 @@
 package com.example.healyj36.quizapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -46,6 +48,23 @@ public class InfiniteGame extends Activity {
         showQuestion(i);
         i++;
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Leaving Game")
+                .setMessage("Are you sure you want to leave this game?\nYour data will be lost.")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     public void getAnswer(View view) {

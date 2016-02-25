@@ -25,7 +25,8 @@ public class DBFunc extends SQLiteOpenHelper {
     public static String DB_PATH = "/data/data/com.example.healyj36.quizapp/databases/";
 
     public static String DB_NAME = "questions.db";
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 15;
+    //public static final int DB_VERSION = 1;
     public static final String TB_NAME1 = "questions";
     public static final String TB_NAME2 = "answers";
 
