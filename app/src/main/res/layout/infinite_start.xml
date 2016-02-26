@@ -7,9 +7,9 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
+        android:layout_weight="1"
         android:id="@+id/infinite_game_mode_intro_title"
         android:text="@string/infinite_game_mode_text_view"
-        android:layout_weight="1"
         android:textStyle="bold"
         android:textSize="@dimen/sub_title_size"
         android:gravity="center_vertical|center"
@@ -39,13 +39,18 @@
         <!-- TODO change "select number" message -->
     </LinearLayout>
 
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:gravity="center_vertical|center">
-
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/spinner_subjects"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown" />
         <Spinner
             android:id="@+id/number_of_questions"
             android:layout_width="0dp"
@@ -53,14 +58,20 @@
             android:layout_weight="1"
             android:background="@android:drawable/btn_dropdown"
             android:spinnerMode="dropdown" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
         <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="1"
             android:id="@+id/infinite_game_mode_start_text_view"
             android:text="@string/start_text_view"
             android:onClick="startInfiniteGame"/>
-
     </LinearLayout>
+
 </LinearLayout>

@@ -40,15 +40,17 @@ public class InfiniteGame extends Activity {
 
         Bundle extras = getIntent().getExtras();
         String numberOfQuestionsString = "0";
+        String subject = "0";
         if (extras != null) {
             numberOfQuestionsString = extras.getString("numberOfQuestionsKey");
-            if (numberOfQuestionsString.equals("All Questions")) {
-                numberOfQuestionsString = String.valueOf(dbFunc.getTotalNumberOfQuestions("questions"));
+            subject = extras.getString("subjectKey");
+            if(numberOfQuestionsString.equals("All Questions")) {
+                numberOfQuestionsString = String.valueOf(dbFunc.getTotalNumberOfQuestions("questions", subject));
             }
         }
 
         numberOfQuestions = Integer.parseInt(numberOfQuestionsString);
-        allQuestions = dbFunc.getQuestionsRandom(numberOfQuestions);
+        allQuestions = dbFunc.getQuestionsRandom(numberOfQuestions, subject);
 
         showQuestion(i);
         i++;
@@ -180,7 +182,7 @@ public class InfiniteGame extends Activity {
         public void onTick(long millisUntilFinished) {
             int progress = (int) (millisUntilFinished/1000);
             millisLeft = millisUntilFinished;
-            timer.setProgress(timer.getMax()-progress);
+            timer.setProgress(timer.getMax() - progress);
         }
 
         @Override

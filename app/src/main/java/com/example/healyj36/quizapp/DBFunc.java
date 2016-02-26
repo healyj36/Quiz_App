@@ -25,8 +25,11 @@ public class DBFunc extends SQLiteOpenHelper {
 
     public static String DB_NAME = "questions.db";
     // TODO =15 works, may need to implement correct onUpgrade method below
-    public static final int DB_VERSION = 15;
+    //public static final int DB_VERSION = 15;
+    // changed to 16 as adding subjects
+    public static final int DB_VERSION = 16;
     //public static final int DB_VERSION = 1;
+    //TODO use TB_NAME1 and TB_NAME2 where appropriate
     public static final String TB_NAME1 = "questions";
     public static final String TB_NAME2 = "answers";
 
@@ -173,10 +176,14 @@ public class DBFunc extends SQLiteOpenHelper {
         return questionArrayList;
     }
 
-    public ArrayList<HashMap<String, String>> getQuestionsRandom(int numberOfQuestions) {
+    public ArrayList<HashMap<String, String>> getQuestionsRandom(int numberOfQuestions, String category) {
         ArrayList<HashMap<String, String>> questionArrayList = new ArrayList<HashMap<String, String>>();
 
-        String selectQuery = "SELECT * FROM questions ORDER BY RANDOM() LIMIT " + numberOfQuestions;
+        String selectQuery = "SELECT * FROM questions WHERE category LIKE '" + category + "' ORDER BY RANDOM() LIMIT " + numberOfQuestions;
+        if(category.equals("All Subjects")) {
+            selectQuery = "SELECT * FROM questions ORDER BY RANDOM() LIMIT " + numberOfQuestions;
+        }
+        // SELECT * FROM questions WHERE category LIKE 'Geography' ORDER BY RANDOM() LIMIT 2;
 
         SQLiteDatabase database = this.getWritableDatabase();
 
@@ -191,6 +198,8 @@ public class DBFunc extends SQLiteOpenHelper {
                 questionMap.put("option2", cursor.getString(3));
                 questionMap.put("option3", cursor.getString(4));
                 questionMap.put("option4", cursor.getString(5));
+                //questionMap.put("subject", cursor.getString(6));
+                // not needed
 
                 questionArrayList.add(questionMap);
             } while (cursor.moveToNext());
@@ -291,8 +300,11 @@ public class DBFunc extends SQLiteOpenHelper {
         return isAnswer;
     }
 
-    public int getTotalNumberOfQuestions (String table) {
-        String selectQuery = "SELECT COUNT(*) FROM " + table;
+    public int getTotalNumberOfQuestions(String table, String category) {
+        String selectQuery = "SELECT COUNT(*) FROM " + table + " WHERE category LIKE '" + category + "'";
+        if(category.equals("All Subjects")) {
+            selectQuery = "SELECT COUNT(*) FROM " + table;
+        }
         SQLiteDatabase database = this.getReadableDatabase();
         Cursor c = database.rawQuery(selectQuery, null);
         int ans = -1; // returns -1 if query unsuccessful
@@ -300,5 +312,37 @@ public class DBFunc extends SQLiteOpenHelper {
             ans = c.getInt(0);
         }
         return ans;
+    }
+
+    public int getNumberOfQuestionsBySubject(String category) {
+        String selectQuery = "SELECT COUNT(*) FROM questions WHERE category LIKE'" + category +"'";
+        if(category=="All Subjects"){
+            selectQuery = "SELECT COUNT(*) FROM questions";
+        }
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor c = database.rawQuery(selectQuery, null);
+        int ans = -1; // returns -1 if query unsuccessful
+        if (c.moveToFirst()) {
+            ans = c.getInt(0);
+        }
+        return ans;
+    }
+
+    public ArrayList<String> getSubjects() {
+        ArrayList<String> allSubjects = new ArrayList<>();
+        String selectQuery = "SELECT DISTINCT category FROM questions";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        String q;
+        if(c.moveToFirst()) {
+            do {
+                q = c.getString(0);
+                allSubjects.add(q);
+            } while(c.moveToNext());
+        }
+        db.close();
+        c.close();
+        return allSubjects;
     }
 }
