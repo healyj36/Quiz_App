@@ -10,10 +10,18 @@
     <string name="option2_temp">op2</string>
     <string name="option3_temp">op3</string>
     <string name="option4_temp">op4</string>
+
     <string name="infinite_game_mode_text_view">Infinite Game Mode</string>
-    <string name="all_questions_text_view">All Questions</string>
-    <string name="settings_text_view">Settings</string>
     <string name="infinite_game_mode_description">In this game mode, you will have to try your best to answer as many questions correctly in a row as possible. The game will exit when either, you answer a question incorrectly or you\'ve answered all the questions correctly</string>
-    <string name="start_text_view">Start</string>
     <string name="select_number_of_questions_message">Please select the number of questions below</string>
+    <string name="start_text_view">Start</string>
+
+    <string name="leaving_game_dialog_title">Leaving game</string>
+    <string name="leaving_game_dialog_message">Are you sure you want to leave this game?\nYour data will be lost.</string>
+    <string name="leaving_game_dialog_positive_action">Yes</string>
+    <string name="leaving_game_dialog_negative_action">No</string>
+
+    <string name="all_questions_text_view">All Questions</string>
+
+    <string name="settings_text_view">Settings</string>
 </resources>
