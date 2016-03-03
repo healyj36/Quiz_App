@@ -21,17 +21,17 @@ import java.util.HashMap;
 public class DBFunc extends SQLiteOpenHelper {
 // TODO close all cursors and databases in all functions
 
-    public static String DB_PATH = "/data/data/com.example.healyj36.quizapp/databases/";
+    private final static String DB_PATH = "/data/data/com.example.healyj36.quizapp/databases/";
 
-    public static String DB_NAME = "questions.db";
+    private final static String DB_NAME = "questions.db";
     // TODO =15 works, may need to implement correct onUpgrade method below
     //public static final int DB_VERSION = 15;
     // changed to 16 as adding subjects
-    public static final int DB_VERSION = 16;
+    private static final int DB_VERSION = 16;
     //public static final int DB_VERSION = 1;
     //TODO use TB_NAME1 and TB_NAME2 where appropriate
-    public static final String TB_NAME1 = "questions";
-    public static final String TB_NAME2 = "answers";
+    private static final String TB_NAME1 = "questions";
+    private static final String TB_NAME2 = "answers";
 
     private SQLiteDatabase myDB;
     private Context context;
@@ -74,7 +74,7 @@ public class DBFunc extends SQLiteOpenHelper {
     }
 
     //Copy database from source code assets to device
-    public void copyDataBase() throws IOException {
+    private void copyDataBase() throws IOException {
         try {
             InputStream myInput = context.getAssets().open(DB_NAME);
             String outputFileName = DB_PATH + DB_NAME;
@@ -152,32 +152,34 @@ public class DBFunc extends SQLiteOpenHelper {
         db.close();
         return listQuestion;
         */
-        ArrayList<HashMap<String, String>> questionArrayList = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> questionArrayList = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM questions ORDER BY questionId";
 
-        SQLiteDatabase database = this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor cursor = database.rawQuery(selectQuery, null);
-        if (cursor.moveToFirst()) {
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
             do {
-                HashMap<String, String> questionMap = new HashMap<String, String>();
+                HashMap<String, String> questionMap = new HashMap<>();
 
-                questionMap.put("questionId", cursor.getString(0));
-                questionMap.put("question", cursor.getString(1));
-                questionMap.put("option1", cursor.getString(2));
-                questionMap.put("option2", cursor.getString(3));
-                questionMap.put("option3", cursor.getString(4));
-                questionMap.put("option4", cursor.getString(5));
+                questionMap.put("questionId", c.getString(0));
+                questionMap.put("question", c.getString(1));
+                questionMap.put("option1", c.getString(2));
+                questionMap.put("option2", c.getString(3));
+                questionMap.put("option3", c.getString(4));
+                questionMap.put("option4", c.getString(5));
 
                 questionArrayList.add(questionMap);
-            } while (cursor.moveToNext());
+            } while (c.moveToNext());
         }
+        db.close();
+        c.close();
         return questionArrayList;
     }
 
     public ArrayList<HashMap<String, String>> getQuestionsRandom(int numberOfQuestions, String category) {
-        ArrayList<HashMap<String, String>> questionArrayList = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> questionArrayList = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM questions WHERE category LIKE '" + category + "' ORDER BY RANDOM() LIMIT " + numberOfQuestions;
         if(category.equals("All Subjects")) {
@@ -185,55 +187,59 @@ public class DBFunc extends SQLiteOpenHelper {
         }
         // SELECT * FROM questions WHERE category LIKE 'Geography' ORDER BY RANDOM() LIMIT 2;
 
-        SQLiteDatabase database = this.getWritableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor cursor = database.rawQuery(selectQuery, null);
-        if (cursor.moveToFirst()) {
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
             do {
-                HashMap<String, String> questionMap = new HashMap<String, String>();
+                HashMap<String, String> questionMap = new HashMap<>();
 
-                questionMap.put("questionId", cursor.getString(0));
-                questionMap.put("question", cursor.getString(1));
-                questionMap.put("option1", cursor.getString(2));
-                questionMap.put("option2", cursor.getString(3));
-                questionMap.put("option3", cursor.getString(4));
-                questionMap.put("option4", cursor.getString(5));
+                questionMap.put("questionId", c.getString(0));
+                questionMap.put("question", c.getString(1));
+                questionMap.put("option1", c.getString(2));
+                questionMap.put("option2", c.getString(3));
+                questionMap.put("option3", c.getString(4));
+                questionMap.put("option4", c.getString(5));
                 //questionMap.put("subject", cursor.getString(6));
                 // not needed
 
                 questionArrayList.add(questionMap);
-            } while (cursor.moveToNext());
+            } while (c.moveToNext());
         }
+        db.close();
+        c.close();
         return questionArrayList;
     }
 
     public HashMap<String, String> getQuestionInfo(String id) {
-        HashMap<String, String> questionMap = new HashMap<String, String>();
+        HashMap<String, String> questionMap = new HashMap<>();
 
         // Open a database for reading only
 
-        SQLiteDatabase database = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT * FROM questions WHERE questionId='" + id + "'";
 
         // rawQuery executes the query and returns the result as a Cursor
 
-        Cursor cursor = database.rawQuery(selectQuery, null);
-        if (cursor.moveToFirst()) {
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
             do {
-                questionMap.put("questionId", cursor.getString(0));
-                questionMap.put("question", cursor.getString(1));
-                questionMap.put("option1", cursor.getString(2));
-                questionMap.put("option2", cursor.getString(3));
-                questionMap.put("option3", cursor.getString(4));
-                questionMap.put("option4", cursor.getString(5));
-            } while (cursor.moveToNext());
+                questionMap.put("questionId", c.getString(0));
+                questionMap.put("question", c.getString(1));
+                questionMap.put("option1", c.getString(2));
+                questionMap.put("option2", c.getString(3));
+                questionMap.put("option3", c.getString(4));
+                questionMap.put("option4", c.getString(5));
+            } while (c.moveToNext());
         }
+        db.close();
+        c.close();
         return questionMap;
     }
 
     public ArrayList<String> getAllQuestionNames() {
-        ArrayList<String> listQuestion = new ArrayList<String>();
+        ArrayList<String> listQuestion = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM " + TB_NAME1;
         Cursor c = db.rawQuery(selectQuery, null);
@@ -245,11 +251,12 @@ public class DBFunc extends SQLiteOpenHelper {
             } while(c.moveToNext());
         }
         db.close();
+        c.close();
         return listQuestion;
     }
 
     public ArrayList<String> findOptionsByQuestion(String ques) {
-        ArrayList<String> listOptions = new ArrayList<String>();
+        ArrayList<String> listOptions = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM " + TB_NAME1 + " WHERE question='" + ques + "'";
         Cursor c = db.rawQuery(selectQuery, null);
@@ -268,6 +275,7 @@ public class DBFunc extends SQLiteOpenHelper {
             } while(c.moveToNext());
         }
         db.close();
+        c.close();
         return listOptions;
     }
 
@@ -296,6 +304,9 @@ public class DBFunc extends SQLiteOpenHelper {
             // second column is answer
         } while(c.moveToNext());
 
+        db.close();
+        c.close();
+
         isAnswer = (correctAnswer.equals(chosenAnswer));
         return isAnswer;
     }
@@ -305,26 +316,34 @@ public class DBFunc extends SQLiteOpenHelper {
         if(category.equals("All Subjects")) {
             selectQuery = "SELECT COUNT(*) FROM " + table;
         }
-        SQLiteDatabase database = this.getReadableDatabase();
-        Cursor c = database.rawQuery(selectQuery, null);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
         int ans = -1; // returns -1 if query unsuccessful
         if (c.moveToFirst()) {
             ans = c.getInt(0);
         }
+
+        db.close();
+        c.close();
+
         return ans;
     }
 
     public int getNumberOfQuestionsBySubject(String category) {
         String selectQuery = "SELECT COUNT(*) FROM questions WHERE category LIKE'" + category +"'";
-        if(category=="All Subjects"){
+        if(category.equals("All Subjects")){
             selectQuery = "SELECT COUNT(*) FROM questions";
         }
-        SQLiteDatabase database = this.getReadableDatabase();
-        Cursor c = database.rawQuery(selectQuery, null);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
         int ans = -1; // returns -1 if query unsuccessful
         if (c.moveToFirst()) {
             ans = c.getInt(0);
         }
+
+        db.close();
+        c.close();
+
         return ans;
     }
 

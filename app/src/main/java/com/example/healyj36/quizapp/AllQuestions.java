@@ -19,9 +19,9 @@ import java.util.HashMap;
 public class AllQuestions extends ListActivity {
     Intent intent; // TODO delete. maybe not needed
     TextView questionId; // TODO delete. maybe not needed
-    ListView lvQuestions;
+    private ListView lvQuestions;
 
-    DBFunc dbFunc = new DBFunc(this);
+    private final DBFunc DB_FUNC = new DBFunc(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,18 +29,18 @@ public class AllQuestions extends ListActivity {
         setContentView(R.layout.all_questions);
 
         try {
-            dbFunc.createDatabase();
+            DB_FUNC.createDatabase();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        ArrayList<HashMap<String, String>> listQuestions = dbFunc.getAllQuestions();
+        ArrayList<HashMap<String, String>> listQuestions = DB_FUNC.getAllQuestions();
 
-        ArrayList<String> allQuestionNames = dbFunc.getAllQuestionNames();
+        ArrayList<String> allQuestionNames = DB_FUNC.getAllQuestionNames();
         if(listQuestions.size() != 0){
             lvQuestions = getListView();
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     this,
                     android.R.layout.simple_list_item_1,
                     android.R.id.text1,allQuestionNames

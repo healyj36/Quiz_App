@@ -3,13 +3,13 @@
 
     <string name="allQuestions">All Questions</string>
 
-    <string name="Question">Question</string>
-    <string name="no_answer_chosen">no answer chosen</string>
     <string name="question_temp">que</string>
     <string name="option1_temp">op1</string>
     <string name="option2_temp">op2</string>
     <string name="option3_temp">op3</string>
     <string name="option4_temp">op4</string>
+
+    <string name="online_game_mode_text_view">1v1 Game Mode</string>
 
     <string name="infinite_game_mode_text_view">Infinite Game Mode</string>
     <string name="infinite_game_mode_description">In this game mode, you will have to try your best to answer as many questions correctly in a row as possible. The game will exit when either, you answer a question incorrectly or you\'ve answered all the questions correctly</string>
@@ -24,4 +24,14 @@
     <string name="all_questions_text_view">All Questions</string>
 
     <string name="settings_text_view">Settings</string>
+
+    <string name="app_title_asc_description">Quiz App. Title</string>
+    <string name="online_game_mode_asc_description">Play 1v1 Game Mode.</string>
+    <string name="infinite_game_mode_button_asc_description">Play Infinite Game Mode.</string>
+    <string name="all_questions_button_asc_description">View all possible questions.</string>
+    <string name="settings_button_asc_description">Go to Settings.</string>
+    <string name="infinite_game_mode_title_asc_description">Infinite Game Mode. Title</string>
+    <string name="subject_spinner_asc_description">Select subject from list.</string>
+    <string name="number_of_questions_asc_description">Select number of questions from list.</string>
+    <string name="infinite_game_mode_start_asc_description">Click to Start Infinite Game Mode.</string>
 </resources>

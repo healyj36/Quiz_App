@@ -15,6 +15,7 @@
         android:textStyle="bold"
         android:textSize="@dimen/title_size"
         android:gravity="center_vertical|center"
+        android:contentDescription="@string/app_title_asc_description"
         />
 
     <LinearLayout
@@ -27,23 +28,34 @@
         <Button
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:id="@+id/infinte_game_mode"
+            android:id="@+id/online_1v1"
+            android:text="@string/online_game_mode_text_view"
+            android:onClick="goTo1v1"
+            android:contentDescription="@string/online_game_mode_asc_description"/>
+
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/infinite_game_mode"
             android:text="@string/infinite_game_mode_text_view"
-            android:onClick="goToInfiniteGameMode"/>
+            android:onClick="goToInfiniteGameMode"
+            android:contentDescription="@string/infinite_game_mode_button_asc_description"/>
 
         <Button
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/all_questions_game_mode"
             android:text="@string/all_questions_text_view"
-            android:onClick="goToAllQuestions"/>
+            android:onClick="goToAllQuestions"
+            android:contentDescription="@string/all_questions_button_asc_description"/>
 
         <Button
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/settings"
             android:text="@string/settings_text_view"
-            android:onClick="goToSettings"/>
+            android:onClick="goToSettings"
+            android:contentDescription="@string/settings_button_asc_description"/>
 
     </LinearLayout>
 </LinearLayout>

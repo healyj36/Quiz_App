@@ -19,13 +19,13 @@ import java.util.HashMap;
  * Created by Jordan on 23/02/2016.
  */
 public class InfiniteGame extends Activity {
-    DBFunc dbFunc = new DBFunc(this);
+    private final DBFunc DB_FUNC = new DBFunc(this);
     private int correctAnswers = 0;
-    ArrayList<HashMap<String, String>> allQuestions = new ArrayList<HashMap<String,String>>();
-    int i = 0;
-    int numberOfQuestions;
-    ProgressBar timer;
-    MyCountDownTimer countDownTimer;
+    private ArrayList<HashMap<String, String>> allQuestions = new ArrayList<>();
+    private int i = 0;
+    private int numberOfQuestions;
+    private ProgressBar timer;
+    private MyCountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class InfiniteGame extends Activity {
         setContentView(R.layout.question_entry);
 
         try {
-            dbFunc.createDatabase();
+            DB_FUNC.createDatabase();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,12 +45,12 @@ public class InfiniteGame extends Activity {
             numberOfQuestionsString = extras.getString("numberOfQuestionsKey");
             subject = extras.getString("subjectKey");
             if(numberOfQuestionsString.equals("All Questions")) {
-                numberOfQuestionsString = String.valueOf(dbFunc.getTotalNumberOfQuestions("questions", subject));
+                numberOfQuestionsString = String.valueOf(DB_FUNC.getTotalNumberOfQuestions("questions", subject));
             }
         }
 
         numberOfQuestions = Integer.parseInt(numberOfQuestionsString);
-        allQuestions = dbFunc.getQuestionsRandom(numberOfQuestions, subject);
+        allQuestions = DB_FUNC.getQuestionsRandom(numberOfQuestions, subject);
 
         showQuestion(i);
         i++;
@@ -84,7 +84,7 @@ public class InfiniteGame extends Activity {
         TextView t = (TextView) findViewById(R.id.question_text_view);
         String ques = t.getText().toString();
 
-        boolean isAnswer = dbFunc.isAnswer(ques, chosenAnswer);
+        boolean isAnswer = DB_FUNC.isAnswer(ques, chosenAnswer);
 
         if(!isAnswer) { // if user chose wrong answer
             // return number of correct answers
@@ -118,7 +118,7 @@ public class InfiniteGame extends Activity {
         }
     }
 
-    public void showQuestion(int index) {
+    private void showQuestion(int index) {
         HashMap<String,String> question = allQuestions.get(index);
 
         String questionName = question.get("question");
@@ -139,7 +139,7 @@ public class InfiniteGame extends Activity {
         option4TextView.setText(option4);
     }
 
-    void showDialog() {
+    private void showDialog() {
         DialogFragment newFragment = AttemptLeaveDialogFragment.newInstance(
                 R.string.leaving_game_dialog_title);
         newFragment.show(getFragmentManager(), "dialog");

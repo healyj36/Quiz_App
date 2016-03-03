@@ -11,6 +11,19 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+/*
+    public void goTo1v1(View view) {
+        Intent view1v1 = new Intent(MainActivity.this, Online.class);
+
+        // final int result = 1; // signal
+
+        // call activity to run and don't expect data to be sent back
+        startActivity(view1v1);
+
+        // call activity to run and retrieve data back
+        // startActivityForResult(viewAllQues, result);
+    }
+    */
 
     public void goToAllQuestions(View view) {
         Intent viewAllQues = new Intent(MainActivity.this, AllQuestions.class);
