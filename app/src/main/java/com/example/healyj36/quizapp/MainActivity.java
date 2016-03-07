@@ -11,7 +11,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-/*
+
     public void goTo1v1(View view) {
         Intent view1v1 = new Intent(MainActivity.this, Online.class);
 
@@ -23,7 +23,6 @@ public class MainActivity extends Activity {
         // call activity to run and retrieve data back
         // startActivityForResult(viewAllQues, result);
     }
-    */
 
     public void goToAllQuestions(View view) {
         Intent viewAllQues = new Intent(MainActivity.this, AllQuestions.class);
