@@ -1,19 +1,17 @@
 package com.example.healyj36.quizapp;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
 
-import com.google.android.gms.*;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameUtils;
-
-public class Online extends Activity implements
+/*
+public class OnlineStart extends Activity implements
         View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -25,16 +23,17 @@ public class Online extends Activity implements
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInFlow = true;
     private boolean mSignInClicked = false;
+*/
 
+public class OnlineStart extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.online_game);
-
+/*
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
 
-        // new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Jordan"));
 
         // Create the Google Api Client with access to the Play Games services
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -43,9 +42,21 @@ public class Online extends Activity implements
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                         // add other APIs and scopes here as needed
                 .build();
+*/
+
 
     }
 
+    public void gotoserver(View view) {
+        Intent intent = new Intent(OnlineStart.this, ServerActivity.class);
+        startActivity(intent);
+    }
+
+    public void gotoclient(View view) {
+        Intent intent = new Intent(OnlineStart.this, ClientActivity.class);
+        startActivity(intent);
+    }
+/*
     @Override
     public void onConnected(Bundle connectionHint) {
         // show sign-out button, hide the sign-in button
@@ -53,6 +64,15 @@ public class Online extends Activity implements
         findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
 
         // (your code here: update UI, enable functionality that depends on sign in, etc)
+
+        // Dialog fragment: would you like to be server or client
+        showDialog();
+    }
+
+    private void showDialog() {
+        DialogFragment newFragment = ServerClientDialogFragment.newInstance(
+                R.string.server_client_dialog_title);
+        newFragment.show(getFragmentManager(), "dialog");
     }
 
     @Override
@@ -146,4 +166,5 @@ public class Online extends Activity implements
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
         }
     }
+    */
 }

@@ -140,7 +140,7 @@ public class InfiniteGame extends Activity {
     }
 
     private void showDialog() {
-        DialogFragment newFragment = AttemptLeaveDialogFragment.newInstance(
+        DialogFragment newFragment = LeavingDialogFragment.newInstance(
                 R.string.leaving_game_dialog_title);
         newFragment.show(getFragmentManager(), "dialog");
     }

@@ -9,10 +9,10 @@ import android.os.Bundle;
 /**
  * Created by Jordan on 26/02/2016.
  */
-public class AttemptLeaveDialogFragment extends DialogFragment {
+public class LeavingDialogFragment extends DialogFragment {
 
-    public static AttemptLeaveDialogFragment newInstance(int title) {
-        AttemptLeaveDialogFragment frag = new AttemptLeaveDialogFragment();
+    public static LeavingDialogFragment newInstance(int title) {
+        LeavingDialogFragment frag = new LeavingDialogFragment();
         Bundle args = new Bundle();
         args.putInt("title", title);
         frag.setArguments(args);

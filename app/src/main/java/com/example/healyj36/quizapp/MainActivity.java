@@ -15,7 +15,7 @@ public class MainActivity extends Activity {
     }
 
     public void goTo1v1(View view) {
-        Intent view1v1 = new Intent(MainActivity.this, Online.class);
+        Intent view1v1 = new Intent(MainActivity.this, OnlineStart.class);
 
         // final int result = 1; // signal
 

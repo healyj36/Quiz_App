@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Quiz App</string>
+    <string name="app_id">471005621093</string>
 
     <string name="allQuestions">All Questions</string>
 
@@ -38,6 +39,9 @@
     <string name="signin_other_error">There was             // an issue with sign-in, please try again later.</string>
     <string name="signin_failure">Unable to sign in.</string>
 
-    <string name="app_id">240114812421</string>
 
+    <string name="server_client_dialog_title">Server or Client</string>
+    <string name="server_client_dialog_message">Would you like to be the Server (host) or the client of this game?</string>
+    <string name="server_client_dialog_positive_action">Client</string>
+    <string name="server_client_dialog_negative_action">Server</string>
 </resources>
