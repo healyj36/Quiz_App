@@ -49,5 +49,17 @@ public class MainActivity extends Activity {
         // call activity to run and retrieve data back
         // startActivityForResult(viewInfinite, result);
     }
+
+    public void goToSettings(View view) {
+        Intent viewSettings = new Intent(MainActivity.this, Settings.class);
+
+        // final int result = 1; // signal
+
+        // call activity to run and don't expect data to be sent back
+        startActivity(viewSettings);
+
+        // call activity to run and retrieve data back
+        // startActivityForResult(viewInfinite, result);
+    }
 }
 

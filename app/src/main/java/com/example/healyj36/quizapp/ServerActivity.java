@@ -150,6 +150,7 @@ public class ServerActivity extends Activity {
 
 
     private String getIpAddress(){
+        /*
         String ip = "My IP address is: ";
         String addr = "UNAVAILABLE";
         try {
@@ -174,5 +175,33 @@ public class ServerActivity extends Activity {
         }
 
         return ip + addr;
+        */
+
+        String ip = "My IP address is: ";
+        String addr = "UNAVAILABLE";
+        try {
+            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
+            while(enumNetworkInterfaces.hasMoreElements()){
+                NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
+                Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
+                while(enumInetAddress.hasMoreElements()) {
+                    InetAddress inetAddress = enumInetAddress.nextElement();
+
+                    if (!(inetAddress.isLoopbackAddress() || inetAddress.isSiteLocalAddress() || inetAddress.isLinkLocalAddress() || inetAddress.isMulticastAddress())) {
+                        if (inetAddress.getHostAddress().matches("^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$")) {
+                            addr = inetAddress.getHostAddress();
+                        }
+                    }
+                }
+            }
+
+        } catch (SocketException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            ip += "Something Wrong! " + e.toString() + "\n";
+        }
+
+        return ip + addr;
+
     }
 }

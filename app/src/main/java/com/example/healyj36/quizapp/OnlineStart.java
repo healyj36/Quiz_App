@@ -43,18 +43,6 @@ public class OnlineStart extends Activity {
                         // add other APIs and scopes here as needed
                 .build();
 */
-
-
-    }
-
-    public void gotoserver(View view) {
-        Intent intent = new Intent(OnlineStart.this, ServerActivity.class);
-        startActivity(intent);
-    }
-
-    public void gotoclient(View view) {
-        Intent intent = new Intent(OnlineStart.this, ClientActivity.class);
-        startActivity(intent);
     }
 /*
     @Override
