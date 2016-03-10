@@ -48,7 +48,6 @@ public class ServerActivity extends Activity {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -106,7 +105,6 @@ public class ServerActivity extends Activity {
 
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 final String errMsg = e.toString();
                 ServerActivity.this.runOnUiThread(new Runnable() {
@@ -122,7 +120,6 @@ public class ServerActivity extends Activity {
                     try {
                         socket.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -131,7 +128,6 @@ public class ServerActivity extends Activity {
                     try {
                         dataInputStream.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -140,7 +136,6 @@ public class ServerActivity extends Activity {
                     try {
                         dataOutputStream.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -150,6 +145,7 @@ public class ServerActivity extends Activity {
 
 
     private String getIpAddress(){
+        // TODO for finding address at home
         /*
         String ip = "My IP address is: ";
         String addr = "UNAVAILABLE";
@@ -169,7 +165,6 @@ public class ServerActivity extends Activity {
             }
 
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             ip += "Something Wrong! " + e.toString() + "\n";
         }
@@ -177,6 +172,7 @@ public class ServerActivity extends Activity {
         return ip + addr;
         */
 
+        // TODO for finding address in DCU
         String ip = "My IP address is: ";
         String addr = "UNAVAILABLE";
         try {
@@ -196,7 +192,6 @@ public class ServerActivity extends Activity {
             }
 
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             ip += "Something Wrong! " + e.toString() + "\n";
         }

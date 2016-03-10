@@ -3,6 +3,7 @@ package com.example.healyj36.quizapp;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -56,12 +57,15 @@ public class InfiniteGame extends Activity {
         i++;
 
         timer = (ProgressBar) findViewById(R.id.countdown_timer);
+        // change colour of progress bar to red
+        timer.getProgressDrawable().setColorFilter(
+                Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN);
+
         // 10000 ms = 10s
         // 1000 ms = 1s
         // timer of 10 seconds counting in intervals of 1 second
         countDownTimer = new MyCountDownTimer(10000, 500);
         countDownTimer.start();
-
     }
 
     @Override
@@ -147,10 +151,10 @@ public class InfiniteGame extends Activity {
 
     public void doPositiveClick() {
     // method for pressing "Yes" on dialog box
-        // TODO when user leaves the previous message is still there. Maybe reset textview?
-        // if user plays game, finishes with a score of 3/5
-        // then the user plays again and quits using the back button
-        // the previous message ("Your score is 3/5") is still there
+        Intent quitIntent = new Intent();
+        quitIntent.putExtra("gameOverKey", "GAME OVER!");
+        quitIntent.putExtra("quitKey", "You quit the game");
+        setResult(Activity.RESULT_OK+3, quitIntent);
 
         //countDownTimer.cancel();
         // cancel is redundant here.
@@ -183,13 +187,19 @@ public class InfiniteGame extends Activity {
             int progress = (int) (millisUntilFinished/1000);
             millisLeft = millisUntilFinished;
             timer.setProgress(timer.getMax() - progress);
+            // if there's 3 seconds (or less) left
+            // change colour of progress bar to red
+            if(progress < 3){
+                timer.getProgressDrawable().setColorFilter(
+                        Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+            }
         }
 
         @Override
         public void onFinish() {
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("outOfTimeKey", "GAME OVER!\nYou ran out of time");
-            // TODO re-structure how this message looks on infinite_start.xml
+            returnIntent.putExtra("gameOverKey", "GAME OVER!");
+            returnIntent.putExtra("outOfTimeKey", "You ran out of time");
             setResult(Activity.RESULT_OK+2, returnIntent);
 
             finish();

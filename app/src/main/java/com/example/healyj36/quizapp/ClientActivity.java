@@ -98,11 +98,9 @@ public class ClientActivity extends Activity {
                 response = dataInputStream.readUTF();
 
             } catch (UnknownHostException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 response = "UnknownHostException: " + e.toString();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 response = "IOException: " + e.toString();
             } finally {
@@ -110,7 +108,6 @@ public class ClientActivity extends Activity {
                     try {
                         socket.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -119,7 +116,6 @@ public class ClientActivity extends Activity {
                     try {
                         dataOutputStream.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -128,7 +124,6 @@ public class ClientActivity extends Activity {
                     try {
                         dataInputStream.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }

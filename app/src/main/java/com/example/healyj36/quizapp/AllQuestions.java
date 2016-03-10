@@ -2,6 +2,7 @@ package com.example.healyj36.quizapp;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,8 +18,6 @@ import java.util.HashMap;
  * Created by Jordan on 23/02/2016.
  */
 public class AllQuestions extends ListActivity {
-    Intent intent; // TODO delete. maybe not needed
-    TextView questionId; // TODO delete. maybe not needed
     private ListView lvQuestions;
 
     private final DBFunc DB_FUNC = new DBFunc(this);
@@ -27,6 +26,7 @@ public class AllQuestions extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.all_questions);
+        initCustomTypeFace(R.id.questionsTitleTextView);
 
         try {
             DB_FUNC.createDatabase();
@@ -67,5 +67,11 @@ public class AllQuestions extends ListActivity {
                 }
             });
         }
+    }
+
+    private void initCustomTypeFace(int textView) {
+        TextView txt = (TextView) findViewById(textView);
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/agency-fb.ttf");
+        txt.setTypeface(font);
     }
 }

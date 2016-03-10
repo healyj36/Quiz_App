@@ -2,6 +2,7 @@ package com.example.healyj36.quizapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ public class InfiniteModeStart extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.infinite_start);
+        initCustomTypeFace(R.id.infinite_game_mode_intro_title);
 
         Spinner dropdown_subject = (Spinner) findViewById(R.id.spinner_subjects);
         ArrayList<String> subjects = DB_FUNC.getSubjects();
@@ -47,7 +49,7 @@ public class InfiniteModeStart extends Activity {
                         dropdown_number.setAdapter(adapter2);
                     }
                     public void onNothingSelected(AdapterView<?> parent) {
-                        // TODO do nothing
+                        // do nothing
                     }
                 });
 
@@ -85,17 +87,38 @@ public class InfiniteModeStart extends Activity {
                 // RESULT_OK is value of -1
                 String correctAnswers = data.getStringExtra("correctAnswersKey");
                 TextView a = (TextView) findViewById(R.id.infinite_game_mode_description);
+                TextView b = (TextView) findViewById(R.id.infinite_game_mode_out_of_time);
                 a.setText(correctAnswers);
+                b.setText("");
                 // TODO create scoreboard table & add in results (with username)
             }
             // resultCode == Activity.RESULT_OK+2, game finished cleanly, ran out of time
             if(resultCode == Activity.RESULT_OK+2) {
                 // RESULT_OK+2 is value of 1
-                String gameOver = data.getStringExtra("outOfTimeKey");
+                String gameOver = data.getStringExtra("gameOverKey");
+                String outOfTime = data.getStringExtra("outOfTimeKey");
                 TextView a = (TextView) findViewById(R.id.infinite_game_mode_description);
+                TextView b = (TextView) findViewById(R.id.infinite_game_mode_out_of_time);
                 a.setText(gameOver);
+                b.setText(outOfTime);
+            }
+            // resultCode == Activity.RESULT_OK+3, game finished cleanly, quit game
+            if(resultCode == Activity.RESULT_OK+3) {
+                // RESULT_OK+3 is value of 2
+                String gameOver = data.getStringExtra("gameOverKey");
+                String quit = data.getStringExtra("quitKey");
+                TextView a = (TextView) findViewById(R.id.infinite_game_mode_description);
+                TextView b = (TextView) findViewById(R.id.infinite_game_mode_out_of_time);
+                a.setText(gameOver);
+                b.setText(quit);
             }
             // resultCode == 0, do nothing. if user exited game (activity)
         }
+    }
+
+    private void initCustomTypeFace(int textView) {
+        TextView txt = (TextView) findViewById(textView);
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/agency-fb.ttf");
+        txt.setTypeface(font);
     }
 }
