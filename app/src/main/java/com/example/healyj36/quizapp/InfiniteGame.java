@@ -1,17 +1,13 @@
 package com.example.healyj36.quizapp;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.DialogFragment;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,13 +19,13 @@ import java.util.HashMap;
  * Created by Jordan on 23/02/2016.
  */
 public class InfiniteGame extends Activity {
-    DBFunc dbFunc = new DBFunc(this);
+    private final DBFunc DB_FUNC = new DBFunc(this);
     private int correctAnswers = 0;
-    ArrayList<HashMap<String, String>> allQuestions = new ArrayList<HashMap<String,String>>();
-    int i = 0;
-    int numberOfQuestions;
-    ProgressBar timer;
-    MyCountDownTimer countDownTimer;
+    private ArrayList<HashMap<String, String>> allQuestions = new ArrayList<>();
+    private int i = 0;
+    private int numberOfQuestions;
+    private ProgressBar timer;
+    private MyCountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,22 +33,24 @@ public class InfiniteGame extends Activity {
         setContentView(R.layout.question_entry);
 
         try {
-            dbFunc.createDatabase();
+            DB_FUNC.createDatabase();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         Bundle extras = getIntent().getExtras();
         String numberOfQuestionsString = "0";
+        String subject = "0";
         if (extras != null) {
             numberOfQuestionsString = extras.getString("numberOfQuestionsKey");
-            if (numberOfQuestionsString.equals("All Questions")) {
-                numberOfQuestionsString = String.valueOf(dbFunc.getTotalNumberOfQuestions("questions"));
+            subject = extras.getString("subjectKey");
+            if(numberOfQuestionsString.equals("All Questions")) {
+                numberOfQuestionsString = String.valueOf(DB_FUNC.getTotalNumberOfQuestions("questions", subject));
             }
         }
 
         numberOfQuestions = Integer.parseInt(numberOfQuestionsString);
-        allQuestions = dbFunc.getQuestionsRandom(numberOfQuestions);
+        allQuestions = DB_FUNC.getQuestionsRandom(numberOfQuestions, subject);
 
         showQuestion(i);
         i++;
@@ -68,39 +66,14 @@ public class InfiniteGame extends Activity {
 
     @Override
     public void onBackPressed() {
-        // TODO don't allow user to press back button here
-        // (or if they do, it doesn't do anything)
         // pause timer
-        countDownTimer.pause();
+        countDownTimer.cancel();
 
         // block question when dialog is open
         // 0xff444444 is the colour of the questions textview (#444444)
         getWindow().setBackgroundDrawable(new ColorDrawable(0xff444444));
-        new AlertDialog.Builder(this)
-                .setTitle("Leaving Game")
-                .setMessage("Are you sure you want to leave this game?\nYour data will be lost.")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO when user leaves the previous message is still there. Maybe reset textview?
-                        // if user plays game, finishes with a score of 3/5
-                        // then the user plays again and quits using the back button
-                        // the previous message ("Your score is 3/5") is still there
-                        countDownTimer.cancel();
-                        finish();
-                    }
 
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO this is hardcoded. need method to find value
-                        // 0xfff3f3f3 is the colour of the default background (#f3f3f3)
-                        getWindow().setBackgroundDrawable(new ColorDrawable(0xfff3f3f3));
-                        countDownTimer.resume();
-                    }
-                })
-                .show();
+        showDialog();
     }
 
     public void getAnswer(View view) {
@@ -111,7 +84,7 @@ public class InfiniteGame extends Activity {
         TextView t = (TextView) findViewById(R.id.question_text_view);
         String ques = t.getText().toString();
 
-        boolean isAnswer = dbFunc.isAnswer(ques, chosenAnswer);
+        boolean isAnswer = DB_FUNC.isAnswer(ques, chosenAnswer);
 
         if(!isAnswer) { // if user chose wrong answer
             // return number of correct answers
@@ -123,9 +96,11 @@ public class InfiniteGame extends Activity {
             this.finish();
         } else { // if user chose right answer
             correctAnswers++; // increment number of correct answers
-            if(allQuestions.size() != i) {
-                // cancel and start to reset timer
+            if(allQuestions.size() != i) { // if there are questions left
+                // cancel timer
                 countDownTimer.cancel();
+                // reset timer
+                countDownTimer = new MyCountDownTimer(10000, 500);
                 countDownTimer.start();
                 showQuestion(i); // show next question
                 i++;
@@ -143,7 +118,7 @@ public class InfiniteGame extends Activity {
         }
     }
 
-    public void showQuestion(int index) {
+    private void showQuestion(int index) {
         HashMap<String,String> question = allQuestions.get(index);
 
         String questionName = question.get("question");
@@ -164,8 +139,40 @@ public class InfiniteGame extends Activity {
         option4TextView.setText(option4);
     }
 
+    private void showDialog() {
+        DialogFragment newFragment = LeavingDialogFragment.newInstance(
+                R.string.leaving_game_dialog_title);
+        newFragment.show(getFragmentManager(), "dialog");
+    }
+
+    public void doPositiveClick() {
+    // method for pressing "Yes" on dialog box
+        // TODO when user leaves the previous message is still there. Maybe reset textview?
+        // if user plays game, finishes with a score of 3/5
+        // then the user plays again and quits using the back button
+        // the previous message ("Your score is 3/5") is still there
+
+        //countDownTimer.cancel();
+        // cancel is redundant here.
+        // timer is already cancelled when back button is pressed
+        finish();
+    }
+
+    public void doNegativeClick() {
+    // method for pressing "No" on dialog box
+        // TODO this is hardcoded. need method to find value
+        // 0xfff3f3f3 is the colour of the default background (#f3f3f3)
+        getWindow().setBackgroundDrawable(new ColorDrawable(0xfff3f3f3));
+
+        //countDownTimer.cancel();
+        // cancel is redundant here.
+        // timer is already cancelled when back button is pressed
+        countDownTimer = new MyCountDownTimer(countDownTimer.millisLeft, 500);
+        countDownTimer.start();
+    }
+
     public class MyCountDownTimer extends CountDownTimer {
-        private long millisLeft;
+        long millisLeft;
 
         public MyCountDownTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -175,7 +182,7 @@ public class InfiniteGame extends Activity {
         public void onTick(long millisUntilFinished) {
             int progress = (int) (millisUntilFinished/1000);
             millisLeft = millisUntilFinished;
-            timer.setProgress(timer.getMax()-progress);
+            timer.setProgress(timer.getMax() - progress);
         }
 
         @Override
@@ -187,20 +194,6 @@ public class InfiniteGame extends Activity {
 
             finish();
         }
-
-        public void pause() {
-            // delete / stop this timer
-            this.cancel();
-        }
-
-        public void resume() {
-            // create a new timer from the last tick
-            // TODO 500ms is hardcoded
-            // interval will always be 500ms
-            // not really an issue for our implementation
-            MyCountDownTimer newTimer = new MyCountDownTimer(millisLeft, 500);
-            // start new timer
-            newTimer.start();
-        }
     }
+
 }

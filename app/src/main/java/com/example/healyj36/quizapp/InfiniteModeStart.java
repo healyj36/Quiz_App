@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -14,34 +15,57 @@ import java.util.ArrayList;
  * Created by Jordan on 23/02/2016.
  */
 public class InfiniteModeStart extends Activity {
-    DBFunc dbFunc = new DBFunc(this);
+    private final DBFunc DB_FUNC = new DBFunc(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.infinite_start);
 
-        Spinner dropdown = (Spinner) findViewById(R.id.number_of_questions);
-        int maxNumber = dbFunc.getTotalNumberOfQuestions("questions");
-        ArrayList<String> items = new ArrayList<String>();
-        items.add("All Questions"); // first element = "All Questions"
-        for(int i=(maxNumber-1); i>0; i--){
-            String elem = String.valueOf(i); // convert number to string
-            items.add(elem); // add it to ArrayList
-        }
+        Spinner dropdown_subject = (Spinner) findViewById(R.id.spinner_subjects);
+        ArrayList<String> subjects = DB_FUNC.getSubjects();
+        // add "All Subjects" to top of list / spinner
+        subjects.add(0, "All Subjects");
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjects);
+        dropdown_subject.setAdapter(adapter1);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        dropdown.setAdapter(adapter);
+        final Spinner dropdown_number = (Spinner) findViewById(R.id.number_of_questions);
+
+        dropdown_subject.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        String subjectName = parent.getItemAtPosition(position).toString();
+                        int maxNumber = DB_FUNC.getNumberOfQuestionsBySubject(subjectName);
+                        ArrayList<String> numbers = new ArrayList<>();
+                        numbers.add("All Questions"); // first element = "All Questions"
+                        for(int i=(maxNumber-1); i>0; i--){
+                            String elem = String.valueOf(i); // convert number to string
+                            numbers.add(elem); // add it to ArrayList
+                        }
+
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(InfiniteModeStart.this, android.R.layout.simple_spinner_dropdown_item, numbers);
+                        dropdown_number.setAdapter(adapter2);
+                    }
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        // TODO do nothing
+                    }
+                });
+
+        // on item selected {
+        //String subjectName = dropdown_subject.getSelectedItem().toString();
+
+        // }
     }
 
-
     public void startInfiniteGame(View view) {
-        Spinner spinner = (Spinner) findViewById(R.id.number_of_questions);
+        Spinner spinner1 = (Spinner) findViewById(R.id.spinner_subjects);
+        Spinner spinner2 = (Spinner) findViewById(R.id.number_of_questions);
 
         Intent startGame = new Intent(InfiniteModeStart.this, InfiniteGame.class);
 
         final int requestCode = 1; // signal
-        startGame.putExtra("numberOfQuestionsKey", spinner.getSelectedItem().toString());
+        startGame.putExtra("subjectKey", spinner1.getSelectedItem().toString());
+        startGame.putExtra("numberOfQuestionsKey", spinner2.getSelectedItem().toString());
 
         // call activity to run and don't expect data to be sent back
         //startActivity(startGame);

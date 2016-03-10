@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 
 public class ViewQuestion extends Activity {
-    DBFunc dbFunc = new DBFunc(this);
+    private final DBFunc DB_FUNC = new DBFunc(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class ViewQuestion extends Activity {
         TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
         question_text_view.setText(questionChosen);
 
-        ArrayList<String> options = dbFunc.findOptionsByQuestion(questionChosen);
+        ArrayList<String> options = DB_FUNC.findOptionsByQuestion(questionChosen);
 
         TextView option1 = (TextView) findViewById(R.id.option1_button_text_view);
         option1.setText(options.get(0));
@@ -48,7 +48,7 @@ public class ViewQuestion extends Activity {
         TextView t = (TextView) findViewById(R.id.question_text_view);
         String ques = t.getText().toString();
 
-        boolean isAnswer = dbFunc.isAnswer(ques, chosenAnswer);
+        boolean isAnswer = DB_FUNC.isAnswer(ques, chosenAnswer);
         TextView a = (TextView) findViewById(R.id.chosen_answer_text_view);
         a.setText(String.valueOf(isAnswer));
 
