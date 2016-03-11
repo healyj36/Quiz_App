@@ -2,6 +2,7 @@ package com.example.healyj36.quizapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.DataInputStream;
@@ -12,43 +13,70 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
-import java.util.UnknownFormatConversionException;
 
 /**
  * Created by Jordan on 09/03/2016.
  */
 public class ServerActivity extends Activity {
 
-    TextView info, infoip, msg;
+    EditText serverMsg;
+
+    TextView infoIp, msg;
     String message = "";
     ServerSocket serverSocket;
+    Socket socket;
+
+    DataInputStream dataInputStream;
+    DataOutputStream dataOutputStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.server_activity);
 
-        info = (TextView) findViewById(R.id.info);
-        infoip = (TextView) findViewById(R.id.infoip);
+        infoIp = (TextView) findViewById(R.id.infoIp);
         msg = (TextView) findViewById(R.id.msg);
+        serverMsg = (EditText)findViewById(R.id.title);
 
-        infoip.setText(getIpAddress());
+        infoIp.setText(getIpAddress());
 
         Thread socketServerThread = new Thread(new SocketServerThread());
         socketServerThread.start();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
+        // in case finally block isn't reached (doesn't run)
+        // close sockets here
         if (serverSocket != null) {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (dataInputStream != null) {
+            try {
+                dataInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (dataOutputStream != null) {
+            try {
+                dataOutputStream.close();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -61,27 +89,16 @@ public class ServerActivity extends Activity {
 
         @Override
         public void run() {
-            Socket socket = null;
-            DataInputStream dataInputStream = null;
-            DataOutputStream dataOutputStream = null;
+            socket = null;
+            dataInputStream = null;
+            dataOutputStream = null;
 
             try {
                 serverSocket = new ServerSocket(SocketServerPORT);
-                ServerActivity.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        info.setText("I'm waiting here: "
-                                + serverSocket.getLocalPort());
-                    }
-                });
-
                 while (true) {
                     socket = serverSocket.accept();
-                    dataInputStream = new DataInputStream(
-                            socket.getInputStream());
-                    dataOutputStream = new DataOutputStream(
-                            socket.getOutputStream());
+                    dataInputStream = new DataInputStream(socket.getInputStream());
+                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
                     String messageFromClient = "";
 
@@ -94,23 +111,21 @@ public class ServerActivity extends Activity {
                             + "Msg from client: " + messageFromClient + "\n";
 
                     ServerActivity.this.runOnUiThread(new Runnable() {
-
                         @Override
                         public void run() {
                             msg.setText(message);
                         }
                     });
 
-                    String msgReply = "Hello from Android, you are #" + count;
+                    String msgReply = count + ": " + serverMsg.getText().toString();
                     dataOutputStream.writeUTF(msgReply);
+                    dataOutputStream.flush();
 
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 final String errMsg = e.toString();
                 ServerActivity.this.runOnUiThread(new Runnable() {
-
                     @Override
                     public void run() {
                         msg.setText(errMsg);
@@ -122,7 +137,6 @@ public class ServerActivity extends Activity {
                     try {
                         socket.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -131,7 +145,6 @@ public class ServerActivity extends Activity {
                     try {
                         dataInputStream.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -140,7 +153,6 @@ public class ServerActivity extends Activity {
                     try {
                         dataOutputStream.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -150,6 +162,7 @@ public class ServerActivity extends Activity {
 
 
     private String getIpAddress(){
+        // TODO for finding address at home
         /*
         String ip = "My IP address is: ";
         String addr = "UNAVAILABLE";
@@ -169,7 +182,6 @@ public class ServerActivity extends Activity {
             }
 
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             ip += "Something Wrong! " + e.toString() + "\n";
         }
@@ -177,6 +189,7 @@ public class ServerActivity extends Activity {
         return ip + addr;
         */
 
+        // TODO for finding address in DCU
         String ip = "My IP address is: ";
         String addr = "UNAVAILABLE";
         try {
@@ -186,7 +199,6 @@ public class ServerActivity extends Activity {
                 Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
                 while(enumInetAddress.hasMoreElements()) {
                     InetAddress inetAddress = enumInetAddress.nextElement();
-
                     if (!(inetAddress.isLoopbackAddress() || inetAddress.isSiteLocalAddress() || inetAddress.isLinkLocalAddress() || inetAddress.isMulticastAddress())) {
                         if (inetAddress.getHostAddress().matches("^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$")) {
                             addr = inetAddress.getHostAddress();
@@ -194,14 +206,10 @@ public class ServerActivity extends Activity {
                     }
                 }
             }
-
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             ip += "Something Wrong! " + e.toString() + "\n";
         }
-
         return ip + addr;
-
     }
 }

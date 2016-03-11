@@ -9,7 +9,7 @@
         android:id="@+id/tableRow1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#444444" >
+        >
 
         <TextView
             android:id="@+id/questionsTitleTextView"
@@ -17,8 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding_5dp"
             android:text="@string/allQuestions"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#FFF"
+            android:textSize="@dimen/sub_title_size"
+            android:gravity="center_vertical|center"
             android:layout_weight="1" />
     </TableRow>
 

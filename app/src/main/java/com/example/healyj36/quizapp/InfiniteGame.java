@@ -3,6 +3,8 @@ package com.example.healyj36.quizapp;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -56,12 +58,20 @@ public class InfiniteGame extends Activity {
         i++;
 
         timer = (ProgressBar) findViewById(R.id.countdown_timer);
+        // set colour of bar to green (#00cc00)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            // for lollipop and above versions. as this method only works for lollipop or above
+            timer.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#00cc00")));
+        } else {
+            // do something for devices running an SDK lower than lollipop
+            timer.getProgressDrawable().setColorFilter(Color.parseColor("#00cc00"), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
         // 10000 ms = 10s
         // 1000 ms = 1s
         // timer of 10 seconds counting in intervals of 1 second
         countDownTimer = new MyCountDownTimer(10000, 500);
         countDownTimer.start();
-
     }
 
     @Override
@@ -147,10 +157,10 @@ public class InfiniteGame extends Activity {
 
     public void doPositiveClick() {
     // method for pressing "Yes" on dialog box
-        // TODO when user leaves the previous message is still there. Maybe reset textview?
-        // if user plays game, finishes with a score of 3/5
-        // then the user plays again and quits using the back button
-        // the previous message ("Your score is 3/5") is still there
+        Intent quitIntent = new Intent();
+        quitIntent.putExtra("gameOverKey", "GAME OVER!");
+        quitIntent.putExtra("quitKey", "You quit the game");
+        setResult(Activity.RESULT_OK+3, quitIntent);
 
         //countDownTimer.cancel();
         // cancel is redundant here.
@@ -183,13 +193,24 @@ public class InfiniteGame extends Activity {
             int progress = (int) (millisUntilFinished/1000);
             millisLeft = millisUntilFinished;
             timer.setProgress(timer.getMax() - progress);
+            // if there's 3 seconds (or less) left
+            // set colour of bar to red
+            if(progress < 3) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    // for lollipop and above versions. as this method only works for lollipop or above
+                    timer.setProgressTintList(ColorStateList.valueOf(Color.RED));
+                } else {
+                    // do something for devices running an SDK lower than lollipop
+                    timer.getProgressDrawable().setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+                }
+            }
         }
 
         @Override
         public void onFinish() {
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("outOfTimeKey", "GAME OVER!\nYou ran out of time");
-            // TODO re-structure how this message looks on infinite_start.xml
+            returnIntent.putExtra("gameOverKey", "GAME OVER!");
+            returnIntent.putExtra("outOfTimeKey", "You ran out of time");
             setResult(Activity.RESULT_OK+2, returnIntent);
 
             finish();

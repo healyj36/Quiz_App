@@ -40,9 +40,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
-            android:textColor="#444444"
             android:textSize="20sp"
-            android:onClick="getAnswer" />
+            android:onClick="getAnswer"
+            android:background="@drawable/buttonshape"
+            android:textColor="#FFFFFF"/>
 
         <Button
             android:id="@+id/option2_button_text_view"
@@ -50,9 +51,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
-            android:textColor="#444444"
             android:textSize="20sp"
-            android:onClick="getAnswer"/>
+            android:onClick="getAnswer"
+            android:background="@drawable/buttonshape"
+            android:textColor="#FFFFFF"/>
 
     </LinearLayout>
 
@@ -67,9 +69,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
-            android:textColor="#444444"
             android:textSize="20sp"
-            android:onClick="getAnswer"/>
+            android:onClick="getAnswer"
+            android:background="@drawable/buttonshape"
+            android:textColor="#FFFFFF"/>
 
         <Button
             android:id="@+id/option4_button_text_view"
@@ -77,9 +80,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
-            android:textColor="#444444"
             android:textSize="20sp"
-            android:onClick="getAnswer"/>
+            android:onClick="getAnswer"
+            android:background="@drawable/buttonshape"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 
     <LinearLayout android:layout_height="match_parent"

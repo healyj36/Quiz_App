@@ -20,11 +20,14 @@ import java.net.UnknownHostException;
  */
 public class ClientActivity extends Activity {
 
-    TextView textResponse;
-    EditText editTextAddress, editTextPort;
-    Button buttonConnect, buttonClear;
+    Socket socket;
 
-    EditText welcomeMsg;
+    TextView textResponse;
+    EditText editTextAddress;
+    Button buttonSend;
+    //Button buttonClear;
+
+    EditText clientMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,38 +35,34 @@ public class ClientActivity extends Activity {
         setContentView(R.layout.client_activity);
 
         editTextAddress = (EditText) findViewById(R.id.address);
-        editTextPort = (EditText) findViewById(R.id.port);
-        buttonConnect = (Button) findViewById(R.id.connect);
-        buttonClear = (Button) findViewById(R.id.clear);
+        buttonSend = (Button) findViewById(R.id.send);
+        // buttonClear = (Button) findViewById(R.id.clear);
         textResponse = (TextView) findViewById(R.id.response);
 
-        welcomeMsg = (EditText)findViewById(R.id.welcomemsg);
+        clientMsg = (EditText)findViewById(R.id.client_msg);
 
-        buttonConnect.setOnClickListener(buttonConnectOnClickListener);
+        /*
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 textResponse.setText("");
             }
         });
+        */
     }
 
-    View.OnClickListener buttonConnectOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View arg0) {
-            String tMsg = welcomeMsg.getText().toString();
-            if(tMsg.equals("")){
-                tMsg = null;
-                Toast.makeText(ClientActivity.this, "No Welcome Msg sent", Toast.LENGTH_SHORT).show();
-            }
-
-            MyClientTask myClientTask = new MyClientTask(editTextAddress
-                    .getText().toString(), Integer.parseInt(editTextPort
-                    .getText().toString()),
-                    tMsg);
-            myClientTask.execute();
+    public void sendMessage(View view) {
+        String tMsg = clientMsg.getText().toString();
+        if(tMsg.equals("")){
+            tMsg = null;
+            Toast.makeText(ClientActivity.this, "No Welcome Msg sent", Toast.LENGTH_SHORT).show();
         }
-    };
+
+        MyClientTask myClientTask = new MyClientTask(editTextAddress
+                .getText().toString(), 8080,
+                tMsg);
+        myClientTask.execute();
+    }
 
     public class MyClientTask extends AsyncTask<Void, Void, Void> {
 
@@ -81,28 +80,26 @@ public class ClientActivity extends Activity {
         @Override
         protected Void doInBackground(Void... arg0) {
 
-            Socket socket = null;
+            socket = null;
             DataOutputStream dataOutputStream = null;
             DataInputStream dataInputStream = null;
 
             try {
                 socket = new Socket(dstAddress, dstPort);
-                dataOutputStream = new DataOutputStream(
-                        socket.getOutputStream());
+                dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataInputStream = new DataInputStream(socket.getInputStream());
 
                 if(msgToServer != null){
                     dataOutputStream.writeUTF(msgToServer);
+                    dataOutputStream.flush();
                 }
 
                 response = dataInputStream.readUTF();
 
             } catch (UnknownHostException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 response = "UnknownHostException: " + e.toString();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 response = "IOException: " + e.toString();
             } finally {
@@ -110,25 +107,20 @@ public class ClientActivity extends Activity {
                     try {
                         socket.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
-
                 if (dataOutputStream != null) {
                     try {
                         dataOutputStream.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
-
                 if (dataInputStream != null) {
                     try {
                         dataInputStream.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -144,4 +136,15 @@ public class ClientActivity extends Activity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

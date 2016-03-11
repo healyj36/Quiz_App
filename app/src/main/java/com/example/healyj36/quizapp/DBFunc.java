@@ -19,17 +19,15 @@ import java.util.HashMap;
  * Created by Jordan on 19/02/2016.
  */
 public class DBFunc extends SQLiteOpenHelper {
-// TODO close all cursors and databases in all functions
 
     private final static String DB_PATH = "/data/data/com.example.healyj36.quizapp/databases/";
 
     private final static String DB_NAME = "questions.db";
     // TODO =15 works, may need to implement correct onUpgrade method below
     //public static final int DB_VERSION = 15;
-    // changed to 16 as adding subjects
-    private static final int DB_VERSION = 16;
+    // changed to 22 as adding subjects
+    private static final int DB_VERSION = 22;
     //public static final int DB_VERSION = 1;
-    //TODO use TB_NAME1 and TB_NAME2 where appropriate
     private static final String TB_NAME1 = "questions";
     private static final String TB_NAME2 = "answers";
 
@@ -59,19 +57,20 @@ public class DBFunc extends SQLiteOpenHelper {
 
     // Check if the database is exist on device or not
     // TODO delete checkDatabase(). Not used
+    /*
     private boolean checkDatabase() {
         SQLiteDatabase tempDB = null;
         try {
             String myPath = DB_PATH + DB_NAME;
             tempDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
         } catch (SQLiteException e) {
-            // TODO change log message
-            Log.e("tle99 - check", e.getMessage());
+            Log.e("DBFunc - checkDB", e.getMessage());
         }
         if (tempDB != null)
             tempDB.close();
         return tempDB != null ? true : false;
     }
+    */
 
     //Copy database from source code assets to device
     private void copyDataBase() throws IOException {
@@ -91,40 +90,25 @@ public class DBFunc extends SQLiteOpenHelper {
             myOutput.close();
             myInput.close();
         } catch (Exception e) {
-            // TODO change log message
-            Log.e("tle99 - copyDatabase", e.getMessage());
+            Log.e("DBFunc - copyDatabase", e.getMessage());
         }
     }
-
+    // TODO maybe delete. not used
     public void openDataBase() throws SQLException {
         String myPath = DB_PATH + DB_NAME;
         myDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
     }
 
-    //Check if the database doesn't exist on device, create new one
     public void createDatabase() throws IOException {
-        // TODO probably should check if db exists
+        // Don't need to check if db exits
+        // Game won't load without it
+        // There's nothing we can do with this information
 
-        /*
-        boolean dbExist = checkDataBase();
-
-        if (dbExist) {
-
-        } else {
-            this.getReadableDatabase();
-            try {
-                copyDataBase();
-            } catch (IOException e) {
-                Log.e("tle99 - create", e.getMessage());
-            }
-        }
-        */
         this.getReadableDatabase();
         try {
             copyDataBase();
         } catch (IOException e) {
-            // TODO change log message
-            Log.e("tle99 - create", e.getMessage());
+            Log.e("DBFunc - createDB", e.getMessage());
         }
     }
 
@@ -146,15 +130,14 @@ public class DBFunc extends SQLiteOpenHelper {
             } while (c.moveToNext());
             c.close();
         } catch (Exception e) {
-            // TODO change log message
-            Log.e("tle99", e.getMessage());
+            Log.e("DBFunc - getAllQues", e.getMessage());
         }
         db.close();
         return listQuestion;
         */
         ArrayList<HashMap<String, String>> questionArrayList = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM questions ORDER BY questionId";
+        String selectQuery = "SELECT * FROM " + TB_NAME1 + " ORDER BY questionId";
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -181,9 +164,9 @@ public class DBFunc extends SQLiteOpenHelper {
     public ArrayList<HashMap<String, String>> getQuestionsRandom(int numberOfQuestions, String category) {
         ArrayList<HashMap<String, String>> questionArrayList = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM questions WHERE category LIKE '" + category + "' ORDER BY RANDOM() LIMIT " + numberOfQuestions;
+        String selectQuery = "SELECT * FROM " + TB_NAME1 + " WHERE category LIKE '" + category + "' ORDER BY RANDOM() LIMIT " + numberOfQuestions;
         if(category.equals("All Subjects")) {
-            selectQuery = "SELECT * FROM questions ORDER BY RANDOM() LIMIT " + numberOfQuestions;
+            selectQuery = "SELECT * FROM " + TB_NAME1 + " ORDER BY RANDOM() LIMIT " + numberOfQuestions;
         }
         // SELECT * FROM questions WHERE category LIKE 'Geography' ORDER BY RANDOM() LIMIT 2;
 
@@ -218,7 +201,7 @@ public class DBFunc extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT * FROM questions WHERE questionId='" + id + "'";
+        String selectQuery = "SELECT * FROM " + TB_NAME1 + " WHERE questionId='" + id + "'";
 
         // rawQuery executes the query and returns the result as a Cursor
 
@@ -330,7 +313,7 @@ public class DBFunc extends SQLiteOpenHelper {
     }
 
     public int getNumberOfQuestionsBySubject(String category) {
-        String selectQuery = "SELECT COUNT(*) FROM questions WHERE category LIKE'" + category +"'";
+        String selectQuery = "SELECT COUNT(*) FROM " + TB_NAME1 + " WHERE category LIKE'" + category +"'";
         if(category.equals("All Subjects")){
             selectQuery = "SELECT COUNT(*) FROM questions";
         }

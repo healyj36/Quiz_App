@@ -2,8 +2,10 @@ package com.example.healyj36.quizapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
@@ -11,7 +13,14 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initCustomTypeFace(R.id.app_title);
 
+    }
+
+    private void initCustomTypeFace(int textView) {
+        TextView txt = (TextView) findViewById(textView);
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/agency-fb.ttf");
+        txt.setTypeface(font);
     }
 
     public void goTo1v1(View view) {

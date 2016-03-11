@@ -12,14 +12,16 @@ import android.widget.ListView;
  * Created by Jordan on 10/03/2016.
  */
 public class Settings extends Activity {
-    String[] buttonArray = {"Chat Room"};
+    // add other values to list to make them appear in listview
+    private String[] list = {"Chat Room"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, buttonArray);
+
+        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
 
         ListView listView = (ListView) findViewById(R.id.settings_list_view);
         listView.setAdapter(adapter);
@@ -28,14 +30,7 @@ public class Settings extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent openChatRoom = new Intent(Settings.this, ChatRoom.class);
-
-                // final int result = 1; // signal
-
-                // call activity to run and don't expect data to be sent back
                 startActivity(openChatRoom);
-
-                // call activity to run and retrieve data back
-                // startActivityForResult(viewQues, result);
             }
         });
 

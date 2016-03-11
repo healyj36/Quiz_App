@@ -35,13 +35,19 @@
     <string name="subject_spinner_asc_description">Select subject from list.</string>
     <string name="number_of_questions_asc_description">Select number of questions from list.</string>
     <string name="infinite_game_mode_start_asc_description">Click to Start Infinite Game Mode.</string>
+    <string name="chat_room_title_asc_description">Chat room. Title</string>
 
     <string name="signin_other_error">There was             // an issue with sign-in, please try again later.</string>
     <string name="signin_failure">Unable to sign in.</string>
-
 
     <string name="server_client_dialog_title">Server or Client</string>
     <string name="server_client_dialog_message">Would you like to be the Server (host) or the client of this game?</string>
     <string name="server_client_dialog_positive_action">Client</string>
     <string name="server_client_dialog_negative_action">Server</string>
+    <string name="chat_room_description">Here you can chat with your friends using the same app on different devices. One device can act as a server and multiple devices can act as clients. All the messages sent by the clients are displyed on the server device. When the clients message is sent the server will send a reply.</string>
+    <string name="chat_room_title">Chat Room</string>
+    <string name="chat_room_instructions">Please select whether you would like to act as the server or client below.</string>
+    <string name="server_button_text_view">Server</string>
+    <string name="client_button_text_view">Client</string>
+
 </resources>
