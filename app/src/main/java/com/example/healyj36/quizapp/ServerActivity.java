@@ -2,6 +2,7 @@ package com.example.healyj36.quizapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.DataInputStream;
@@ -12,38 +13,45 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
-import java.util.UnknownFormatConversionException;
 
 /**
  * Created by Jordan on 09/03/2016.
  */
 public class ServerActivity extends Activity {
 
-    TextView infoip, msg;
+    EditText serverMsg;
+
+    TextView infoIp, msg;
     String message = "";
     ServerSocket serverSocket;
     Socket socket;
+
+    DataInputStream dataInputStream;
+    DataOutputStream dataOutputStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.server_activity);
 
-        infoip = (TextView) findViewById(R.id.infoip);
+        infoIp = (TextView) findViewById(R.id.infoIp);
         msg = (TextView) findViewById(R.id.msg);
+        serverMsg = (EditText)findViewById(R.id.title);
 
-        infoip.setText(getIpAddress());
+        infoIp.setText(getIpAddress());
 
         Thread socketServerThread = new Thread(new SocketServerThread());
         socketServerThread.start();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
+        // in case finally block isn't reached (doesn't run)
+        // close sockets here
         if (serverSocket != null) {
             try {
                 serverSocket.close();
@@ -58,6 +66,20 @@ public class ServerActivity extends Activity {
                 e.printStackTrace();
             }
         }
+        if (dataInputStream != null) {
+            try {
+                dataInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (dataOutputStream != null) {
+            try {
+                dataOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private class SocketServerThread extends Thread {
@@ -68,18 +90,15 @@ public class ServerActivity extends Activity {
         @Override
         public void run() {
             socket = null;
-            DataInputStream dataInputStream = null;
-            DataOutputStream dataOutputStream = null;
+            dataInputStream = null;
+            dataOutputStream = null;
 
             try {
                 serverSocket = new ServerSocket(SocketServerPORT);
-
                 while (true) {
                     socket = serverSocket.accept();
-                    dataInputStream = new DataInputStream(
-                            socket.getInputStream());
-                    dataOutputStream = new DataOutputStream(
-                            socket.getOutputStream());
+                    dataInputStream = new DataInputStream(socket.getInputStream());
+                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
                     String messageFromClient = "";
 
@@ -92,14 +111,13 @@ public class ServerActivity extends Activity {
                             + "Msg from client: " + messageFromClient + "\n";
 
                     ServerActivity.this.runOnUiThread(new Runnable() {
-
                         @Override
                         public void run() {
                             msg.setText(message);
                         }
                     });
 
-                    String msgReply = "Hello from Android, you are #" + count;
+                    String msgReply = count + ": " + serverMsg.getText().toString();
                     dataOutputStream.writeUTF(msgReply);
                     dataOutputStream.flush();
 
@@ -108,7 +126,6 @@ public class ServerActivity extends Activity {
                 e.printStackTrace();
                 final String errMsg = e.toString();
                 ServerActivity.this.runOnUiThread(new Runnable() {
-
                     @Override
                     public void run() {
                         msg.setText(errMsg);
@@ -182,7 +199,6 @@ public class ServerActivity extends Activity {
                 Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
                 while(enumInetAddress.hasMoreElements()) {
                     InetAddress inetAddress = enumInetAddress.nextElement();
-
                     if (!(inetAddress.isLoopbackAddress() || inetAddress.isSiteLocalAddress() || inetAddress.isLinkLocalAddress() || inetAddress.isMulticastAddress())) {
                         if (inetAddress.getHostAddress().matches("^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$")) {
                             addr = inetAddress.getHostAddress();
@@ -190,13 +206,10 @@ public class ServerActivity extends Activity {
                     }
                 }
             }
-
         } catch (SocketException e) {
             e.printStackTrace();
             ip += "Something Wrong! " + e.toString() + "\n";
         }
-
         return ip + addr;
-
     }
 }

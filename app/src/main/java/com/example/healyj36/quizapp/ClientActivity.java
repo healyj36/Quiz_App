@@ -24,9 +24,10 @@ public class ClientActivity extends Activity {
 
     TextView textResponse;
     EditText editTextAddress;
-    Button buttonConnect, buttonClear;
+    Button buttonSend;
+    //Button buttonClear;
 
-    EditText welcomeMsg;
+    EditText clientMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,36 +35,34 @@ public class ClientActivity extends Activity {
         setContentView(R.layout.client_activity);
 
         editTextAddress = (EditText) findViewById(R.id.address);
-        buttonConnect = (Button) findViewById(R.id.connect);
-        buttonClear = (Button) findViewById(R.id.clear);
+        buttonSend = (Button) findViewById(R.id.send);
+        // buttonClear = (Button) findViewById(R.id.clear);
         textResponse = (TextView) findViewById(R.id.response);
 
-        welcomeMsg = (EditText)findViewById(R.id.welcomemsg);
+        clientMsg = (EditText)findViewById(R.id.client_msg);
 
-        buttonConnect.setOnClickListener(buttonConnectOnClickListener);
+        /*
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 textResponse.setText("");
             }
         });
+        */
     }
 
-    View.OnClickListener buttonConnectOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View arg0) {
-            String tMsg = welcomeMsg.getText().toString();
-            if(tMsg.equals("")){
-                tMsg = null;
-                Toast.makeText(ClientActivity.this, "No Welcome Msg sent", Toast.LENGTH_SHORT).show();
-            }
-
-            MyClientTask myClientTask = new MyClientTask(editTextAddress
-                    .getText().toString(), 8080,
-                    tMsg);
-            myClientTask.execute();
+    public void sendMessage(View view) {
+        String tMsg = clientMsg.getText().toString();
+        if(tMsg.equals("")){
+            tMsg = null;
+            Toast.makeText(ClientActivity.this, "No Welcome Msg sent", Toast.LENGTH_SHORT).show();
         }
-    };
+
+        MyClientTask myClientTask = new MyClientTask(editTextAddress
+                .getText().toString(), 8080,
+                tMsg);
+        myClientTask.execute();
+    }
 
     public class MyClientTask extends AsyncTask<Void, Void, Void> {
 
@@ -87,8 +86,7 @@ public class ClientActivity extends Activity {
 
             try {
                 socket = new Socket(dstAddress, dstPort);
-                dataOutputStream = new DataOutputStream(
-                        socket.getOutputStream());
+                dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataInputStream = new DataInputStream(socket.getInputStream());
 
                 if(msgToServer != null){
@@ -112,7 +110,6 @@ public class ClientActivity extends Activity {
                         e.printStackTrace();
                     }
                 }
-
                 if (dataOutputStream != null) {
                     try {
                         dataOutputStream.close();
@@ -120,7 +117,6 @@ public class ClientActivity extends Activity {
                         e.printStackTrace();
                     }
                 }
-
                 if (dataInputStream != null) {
                     try {
                         dataInputStream.close();

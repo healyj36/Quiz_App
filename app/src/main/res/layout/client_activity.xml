@@ -9,7 +9,7 @@
 
 
     <EditText
-        android:id="@+id/welcomemsg"
+        android:id="@+id/client_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Type Your Message Here" />
@@ -19,15 +19,18 @@
         android:layout_height="wrap_content"
         android:hint="Server Address" />
     <Button
-        android:id="@+id/connect"
+        android:id="@+id/send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send..."/>
+        android:text="Send..."
+        android:onClick="sendMessage"/>
+    <!--
     <Button
         android:id="@+id/clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Clear"/>
+        -->
     <TextView
         android:id="@+id/response"
         android:layout_width="wrap_content"
