@@ -43,7 +43,7 @@
         </activity>
         <activity
             android:name=".OnlineStart"
-            android:label="Online game mode start screen"
+            android:label="1v1 Start Screen"
             android:theme="@style/AppTheme">
         </activity>
         <activity
@@ -64,6 +64,16 @@
         <activity
             android:name=".ChatRoom"
             android:label="Chat room"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".HostGame"
+            android:label="Host Game"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".JoinGame"
+            android:label="Join Game"
             android:theme="@style/AppTheme">
         </activity>
 

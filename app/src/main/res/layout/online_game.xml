@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.healyj36.quizapp.OnlineStart">
-<!--
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
+        android:id="@+id/online_game_mode_title"
+        android:text="@string/online_game_mode_title"
+        android:textStyle="bold"
+        android:textSize="@dimen/sub_title_size"
+        android:gravity="center_vertical|center"
+        android:contentDescription="@string/chat_room_title_asc_description"
+        />
+
+    <!--
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
@@ -22,6 +32,76 @@
         android:visibility="gone" />
     -->
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center"
+        android:padding="@dimen/padding_5dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/online_game_mode_description"
+            android:text="@string/online_game_mode_description"/>
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_5dp"
+            android:id="@+id/online_game_mode_instructions"
+            android:text="@string/chat_room_instructions"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center_vertical|center"
+        android:padding="@dimen/padding_5dp">
+
+        <Spinner
+            android:id="@+id/spinner_subjects"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"
+            android:contentDescription="@string/subject_spinner_asc_description"/>
+        <Spinner
+            android:id="@+id/number_of_questions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"
+            android:contentDescription="@string/number_of_questions_asc_description"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/host_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/host_game_text_view"
+            android:onClick="hostChosen" />
+
+        <Button
+            android:id="@+id/join_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/join_game_text_view"
+            android:onClick="joinChosen" />
+
+    </LinearLayout>
+
+</LinearLayout>

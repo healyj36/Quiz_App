@@ -49,5 +49,9 @@
     <string name="chat_room_instructions">Please select whether you would like to act as the server or client below.</string>
     <string name="server_button_text_view">Server</string>
     <string name="client_button_text_view">Client</string>
+    <string name="online_game_mode_description">In this game mode, you will play against a friend to see who can answer more questions correctly. One device can act as a host of the match and the opponent connects to them.</string>
+    <string name="host_game_text_view">Host Game</string>
+    <string name="join_game_text_view">Join Game</string>
+    <string name="online_game_mode_title">1v1 Game Mode</string>
 
 </resources>
