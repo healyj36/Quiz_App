@@ -20,8 +20,10 @@ import java.net.UnknownHostException;
  */
 public class ClientActivity extends Activity {
 
+    Socket socket;
+
     TextView textResponse;
-    EditText editTextAddress, editTextPort;
+    EditText editTextAddress;
     Button buttonConnect, buttonClear;
 
     EditText welcomeMsg;
@@ -32,7 +34,6 @@ public class ClientActivity extends Activity {
         setContentView(R.layout.client_activity);
 
         editTextAddress = (EditText) findViewById(R.id.address);
-        editTextPort = (EditText) findViewById(R.id.port);
         buttonConnect = (Button) findViewById(R.id.connect);
         buttonClear = (Button) findViewById(R.id.clear);
         textResponse = (TextView) findViewById(R.id.response);
@@ -58,8 +59,7 @@ public class ClientActivity extends Activity {
             }
 
             MyClientTask myClientTask = new MyClientTask(editTextAddress
-                    .getText().toString(), Integer.parseInt(editTextPort
-                    .getText().toString()),
+                    .getText().toString(), 8080,
                     tMsg);
             myClientTask.execute();
         }
@@ -81,7 +81,7 @@ public class ClientActivity extends Activity {
         @Override
         protected Void doInBackground(Void... arg0) {
 
-            Socket socket = null;
+            socket = null;
             DataOutputStream dataOutputStream = null;
             DataInputStream dataInputStream = null;
 
@@ -93,6 +93,7 @@ public class ClientActivity extends Activity {
 
                 if(msgToServer != null){
                     dataOutputStream.writeUTF(msgToServer);
+                    dataOutputStream.flush();
                 }
 
                 response = dataInputStream.readUTF();
@@ -139,4 +140,15 @@ public class ClientActivity extends Activity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

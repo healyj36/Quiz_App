@@ -21,16 +21,16 @@ import java.util.UnknownFormatConversionException;
  */
 public class ServerActivity extends Activity {
 
-    TextView info, infoip, msg;
+    TextView infoip, msg;
     String message = "";
     ServerSocket serverSocket;
+    Socket socket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.server_activity);
 
-        info = (TextView) findViewById(R.id.info);
         infoip = (TextView) findViewById(R.id.infoip);
         msg = (TextView) findViewById(R.id.msg);
 
@@ -51,6 +51,13 @@ public class ServerActivity extends Activity {
                 e.printStackTrace();
             }
         }
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private class SocketServerThread extends Thread {
@@ -60,20 +67,12 @@ public class ServerActivity extends Activity {
 
         @Override
         public void run() {
-            Socket socket = null;
+            socket = null;
             DataInputStream dataInputStream = null;
             DataOutputStream dataOutputStream = null;
 
             try {
                 serverSocket = new ServerSocket(SocketServerPORT);
-                ServerActivity.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        info.setText("I'm waiting here: "
-                                + serverSocket.getLocalPort());
-                    }
-                });
 
                 while (true) {
                     socket = serverSocket.accept();
@@ -102,6 +101,7 @@ public class ServerActivity extends Activity {
 
                     String msgReply = "Hello from Android, you are #" + count;
                     dataOutputStream.writeUTF(msgReply);
+                    dataOutputStream.flush();
 
                 }
             } catch (IOException e) {

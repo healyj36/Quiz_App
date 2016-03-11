@@ -3,6 +3,7 @@ package com.example.healyj36.quizapp;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -57,9 +58,14 @@ public class InfiniteGame extends Activity {
         i++;
 
         timer = (ProgressBar) findViewById(R.id.countdown_timer);
-        // change colour of progress bar to red
-        timer.getProgressDrawable().setColorFilter(
-                Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN);
+        // set colour of bar to green (#00cc00)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            // for lollipop and above versions. as this method only works for lollipop or above
+            timer.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#00cc00")));
+        } else {
+            // do something for devices running an SDK lower than lollipop
+            timer.getProgressDrawable().setColorFilter(Color.parseColor("#00cc00"), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
 
         // 10000 ms = 10s
         // 1000 ms = 1s
@@ -188,10 +194,15 @@ public class InfiniteGame extends Activity {
             millisLeft = millisUntilFinished;
             timer.setProgress(timer.getMax() - progress);
             // if there's 3 seconds (or less) left
-            // change colour of progress bar to red
-            if(progress < 3){
-                timer.getProgressDrawable().setColorFilter(
-                        Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+            // set colour of bar to red
+            if(progress < 3) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    // for lollipop and above versions. as this method only works for lollipop or above
+                    timer.setProgressTintList(ColorStateList.valueOf(Color.RED));
+                } else {
+                    // do something for devices running an SDK lower than lollipop
+                    timer.getProgressDrawable().setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+                }
             }
         }
 
