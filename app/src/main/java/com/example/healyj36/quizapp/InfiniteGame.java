@@ -203,6 +203,16 @@ public class InfiniteGame extends Activity {
                     // do something for devices running an SDK lower than lollipop
                     timer.getProgressDrawable().setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
                 }
+            } else {
+                // else, set colour of bar to green
+                // (reset the color when the next answer appears)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    // for lollipop and above versions. as this method only works for lollipop or above
+                    timer.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#00cc00")));
+                } else {
+                    // do something for devices running an SDK lower than lollipop
+                    timer.getProgressDrawable().setColorFilter(Color.parseColor("#00cc00"), android.graphics.PorterDuff.Mode.SRC_IN);
+                }
             }
         }
 

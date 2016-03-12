@@ -17,53 +17,62 @@
         <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ViewQuestion"
-            android:label="View question"
+            android:label="View Question"
             android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".AllQuestions"
-            android:label="All questions"
+            android:label="All Questions"
             android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".InfiniteGame"
-            android:label="Infinite game mode"
+            android:label="Infinite Game Mode"
             android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".InfiniteModeStart"
-            android:label="Infinite game mode start screen"
+            android:label="Infinite Game Mode"
             android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".OnlineStart"
-            android:label="Online game mode start screen"
+            android:label="1v1 Game Mode"
             android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".ServerActivity"
-            android:label="Server Activity"
+            android:label="&quot;Server&quot;"
             android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".ClientActivity"
-            android:label="Client Activity"
+            android:label="&quot;Client&quot;"
             android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".Settings"
-            android:label="Settings page"
+            android:label="Settings"
             android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".ChatRoom"
-            android:label="Chat room"
+            android:label="Chat Room"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".HostGame"
+            android:label="Host Game"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".JoinGame"
+            android:label="Join Game"
             android:theme="@style/AppTheme">
         </activity>
 

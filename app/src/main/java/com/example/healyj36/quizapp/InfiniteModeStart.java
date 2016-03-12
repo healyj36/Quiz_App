@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -23,6 +24,12 @@ public class InfiniteModeStart extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.infinite_start);
         initCustomTypeFace(R.id.infinite_game_mode_intro_title);
+
+        try {
+            DB_FUNC.createDatabase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Spinner dropdown_subject = (Spinner) findViewById(R.id.spinner_subjects);
         ArrayList<String> subjects = DB_FUNC.getSubjects();

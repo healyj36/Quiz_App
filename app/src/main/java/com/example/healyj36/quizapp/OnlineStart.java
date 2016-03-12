@@ -3,13 +3,20 @@ package com.example.healyj36.quizapp;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameUtils;
+
+import java.util.ArrayList;
 /*
 public class OnlineStart extends Activity implements
         View.OnClickListener,
@@ -26,10 +33,13 @@ public class OnlineStart extends Activity implements
 */
 
 public class OnlineStart extends Activity {
+    private final DBFunc DB_FUNC = new DBFunc(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.online_game);
+        initCustomTypeFace(R.id.online_game_mode_title);
 /*
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
@@ -43,6 +53,86 @@ public class OnlineStart extends Activity {
                         // add other APIs and scopes here as needed
                 .build();
 */
+
+        Spinner dropdown_subject = (Spinner) findViewById(R.id.spinner_subjects);
+        ArrayList<String> subjects = DB_FUNC.getSubjects();
+        // add "All Subjects" to top of list / spinner
+        subjects.add(0, "All Subjects");
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjects);
+        dropdown_subject.setAdapter(adapter1);
+
+        final Spinner dropdown_number = (Spinner) findViewById(R.id.number_of_questions);
+        dropdown_subject.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        String subjectName = parent.getItemAtPosition(position).toString();
+                        int maxNumber = DB_FUNC.getNumberOfQuestionsBySubject(subjectName);
+                        ArrayList<String> numbers = new ArrayList<>();
+                        numbers.add("All Questions"); // first element = "All Questions"
+                        for(int i=(maxNumber-1); i>0; i--){
+                            String elem = String.valueOf(i); // convert number to string
+                            numbers.add(elem); // add it to ArrayList
+                        }
+
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(OnlineStart.this, android.R.layout.simple_spinner_dropdown_item, numbers);
+                        dropdown_number.setAdapter(adapter2);
+                    }
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        // do nothing
+                    }
+                });
+    }
+
+    private void initCustomTypeFace(int textView) {
+        TextView txt = (TextView) findViewById(textView);
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/agency-fb.ttf");
+        txt.setTypeface(font);
+    }
+
+    public void hostChosen(View view) {
+        Spinner spinner1 = (Spinner) findViewById(R.id.spinner_subjects);
+        Spinner spinner2 = (Spinner) findViewById(R.id.number_of_questions);
+        Intent hostGame = new Intent(OnlineStart.this, HostGame.class);
+
+        final int result = 1; // signal
+
+        hostGame.putExtra("subjectKey", spinner1.getSelectedItem().toString());
+        hostGame.putExtra("numberOfQuestionsKey", spinner2.getSelectedItem().toString());
+        // call activity to run and don't expect data to be sent back
+        //startActivity(hostGame);
+
+        // call activity to run and retrieve data back
+        startActivityForResult(hostGame, result);
+    }
+
+    public void joinChosen(View view) {
+        Intent joinGame = new Intent(OnlineStart.this, JoinGame.class);
+
+        final int result = 1; // signal
+
+        // call activity to run and don't expect data to be sent back
+        //startActivity(joinGame);
+
+        // call activity to run and retrieve data back
+        startActivityForResult(joinGame, result);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // return result from online game
+        if (requestCode == 1) {
+            // resultCode == Activity.RESULT_OK, game finished cleanly
+            if (resultCode == Activity.RESULT_OK) {
+                String scoreText = data.getStringExtra("scoreKey");
+                int numQuestions = data.getIntExtra("numQuestionsKey", 0);
+                // 0 here is the default value
+                // if the number of questions cant be received from the intent
+                // numQuestions will be 0
+                TextView a = (TextView) findViewById(R.id.online_game_mode_score);
+                String str = scoreText + " / " + numQuestions;
+                a.setText(str);
+            }
+        }
     }
 /*
     @Override

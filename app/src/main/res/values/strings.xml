@@ -44,10 +44,14 @@
     <string name="server_client_dialog_message">Would you like to be the Server (host) or the client of this game?</string>
     <string name="server_client_dialog_positive_action">Client</string>
     <string name="server_client_dialog_negative_action">Server</string>
-    <string name="chat_room_description">Here you can chat with your friends using the same app on different devices. One device can act as a server and multiple devices can act as clients. All the messages sent by the clients are displyed on the server device. When the clients message is sent the server will send a reply.</string>
+    <string name="chat_room_description">Here you can chat with your friends using the same app on different devices. One device can act as a server and multiple devices can act as clients. All the messages sent by the clients are displayed on the server device. When the clients message is sent the server will send a reply.</string>
     <string name="chat_room_title">Chat Room</string>
     <string name="chat_room_instructions">Please select whether you would like to act as the server or client below.</string>
     <string name="server_button_text_view">Server</string>
     <string name="client_button_text_view">Client</string>
+    <string name="online_game_mode_description">In this game mode, you will play against a friend to see who can answer more questions correctly. One device can act as a host of the match and the opponent connects to them.</string>
+    <string name="host_game_text_view">Host Game</string>
+    <string name="join_game_text_view">Join Game</string>
+    <string name="online_game_mode_title">1v1 Game Mode</string>
 
 </resources>
