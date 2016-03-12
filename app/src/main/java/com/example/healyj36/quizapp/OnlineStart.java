@@ -108,13 +108,31 @@ public class OnlineStart extends Activity {
     public void joinChosen(View view) {
         Intent joinGame = new Intent(OnlineStart.this, JoinGame.class);
 
-        // final int result = 1; // signal
+        final int result = 1; // signal
 
         // call activity to run and don't expect data to be sent back
-        startActivity(joinGame);
+        //startActivity(joinGame);
 
         // call activity to run and retrieve data back
-        // startActivityForResult(viewAllQues, result);
+        startActivityForResult(joinGame, result);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // return result from online game
+        if (requestCode == 1) {
+            // resultCode == Activity.RESULT_OK, game finished cleanly
+            if (resultCode == Activity.RESULT_OK) {
+                String scoreText = data.getStringExtra("scoreKey");
+                int numQuestions = data.getIntExtra("numQuestionsKey", 0);
+                // 0 here is the default value
+                // if the number of questions cant be received from the intent
+                // numQuestions will be 0
+                TextView a = (TextView) findViewById(R.id.online_game_mode_score);
+                String str = scoreText + " / " + numQuestions;
+                a.setText(str);
+            }
+        }
     }
 /*
     @Override

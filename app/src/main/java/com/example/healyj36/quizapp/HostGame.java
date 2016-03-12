@@ -27,7 +27,6 @@ public class HostGame extends Activity {
     EditText serverMsg;
 
     TextView infoIp, msg;
-    String message = "";
     ServerSocket serverSocket;
     Socket socket;
     int numberOfQuestions;
@@ -45,7 +44,6 @@ public class HostGame extends Activity {
         infoIp = (TextView) findViewById(R.id.infoIp);
         msg = (TextView) findViewById(R.id.msg);
         serverMsg = (EditText)findViewById(R.id.title);
-
         serverMsg.setVisibility(View.GONE);
 
         Bundle extras = getIntent().getExtras();
@@ -114,11 +112,28 @@ public class HostGame extends Activity {
         String o3 = question.get("option3");
         String o4 = question.get("option4");
 
-        return  "[" + q +
+        return "[" + q +
                 ", " + o1 +
                 ", " + o2 +
                 ", " + o3 +
                 ", " + o4 + "]";
+    }
+
+    private String getQuestionAndAnswers(int index, boolean previousAnswer) {
+        HashMap<String,String> question = allQuestions.get(index);
+
+        String q = question.get("question");
+        String o1 = question.get("option1");
+        String o2 = question.get("option2");
+        String o3 = question.get("option3");
+        String o4 = question.get("option4");
+
+        return "[" + q +
+                ", " + o1 +
+                ", " + o2 +
+                ", " + o3 +
+                ", " + o4 +
+                ", " + previousAnswer + "]";
     }
 
     private String getQuestion(int index) {
@@ -146,25 +161,6 @@ public class HostGame extends Activity {
                     socket = serverSocket.accept();
                     dataInputStream = new DataInputStream(socket.getInputStream());
                     dataOutputStream = new DataOutputStream(socket.getOutputStream());
-
-                    /*
-                    String messageFromClient = "";
-
-                    //If no message sent from client, this code will block the program
-                    messageFromClient = dataInputStream.readUTF();
-
-                    count++;
-                    message += "#" + count + " from " + socket.getInetAddress()
-                            + ":" + socket.getPort() + "\n"
-                            + "Msg from client: " + messageFromClient + "\n";
-
-                    HostGame.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            msg.setText(message);
-                        }
-                    });
-                    */
                     String msgReply = count + ": DEFAULT MESSAGE";
 
                     /*
@@ -177,20 +173,39 @@ public class HostGame extends Activity {
                         flush
                     endfor
                     */
+                    boolean isAnswer;
 
-                    //private ArrayList<HashMap<String, String>> allQuestions = new ArrayList<>();
-                    for( int i = 0; i < numberOfQuestions ; i++ ) {
-                        String q = getQuestionAndAnswers(i);
+                    dataOutputStream.writeInt(numberOfQuestions);
+                    dataOutputStream.flush();
+
+                    int i = 0;
+                    String q = getQuestionAndAnswers(i);
+                    i++;
+                    String choice;
+                    int score =0;
+                    while (i < numberOfQuestions) {
                         dataOutputStream.writeUTF(q);
                         dataOutputStream.flush();
-                        String answer = dataInputStream.readUTF();
-                        boolean isAnswer = DB_FUNC.isAnswer(getQuestion(i), answer);
-                        dataOutputStream.writeBoolean(isAnswer);
-                        dataOutputStream.flush();
+
+                        choice = dataInputStream.readUTF();
+                        isAnswer = DB_FUNC.isAnswer(getQuestion(i-1), choice);
+                        if(isAnswer){
+                            score++;
+                        }
+                        q = getQuestionAndAnswers(i, isAnswer);
+                        i++;
                     }
 
-                    dataOutputStream.writeUTF(msgReply);
+                    dataOutputStream.writeUTF(q);
                     dataOutputStream.flush();
+                    choice = dataInputStream.readUTF();
+                    isAnswer = DB_FUNC.isAnswer(getQuestion(i-1), choice);
+                    if(isAnswer) {
+                        score++;
+                    }
+                    dataOutputStream.writeInt(score);
+                    dataOutputStream.flush();
+
 
                 }
             } catch (IOException e) {
