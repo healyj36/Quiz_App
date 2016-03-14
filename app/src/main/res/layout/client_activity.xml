@@ -17,7 +17,8 @@
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Server Address" />
+        android:hint="Server Address"
+        android:inputType="text"/>
     <Button
         android:id="@+id/send"
         android:layout_width="match_parent"

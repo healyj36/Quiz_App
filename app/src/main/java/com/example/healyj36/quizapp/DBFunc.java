@@ -264,6 +264,8 @@ public class DBFunc extends SQLiteOpenHelper {
 
     public boolean isAnswer(String ques, final String chosenAnswer) {
         boolean isAnswer;
+        /*
+        // TODO make readable not writable (i think)
         SQLiteDatabase db = this.getWritableDatabase();
         String queryForId = "SELECT questionId FROM " + TB_NAME1 + " WHERE question='" + ques + "'";
         // e.g. SELECT questionId FROM questions WHERE question='Which material is most dense?'
@@ -289,9 +291,41 @@ public class DBFunc extends SQLiteOpenHelper {
 
         db.close();
         c.close();
+        */
+        String correctAnswer = getAnswer(ques);
 
         isAnswer = (correctAnswer.equals(chosenAnswer));
         return isAnswer;
+    }
+
+    public String getAnswer(String ques) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String queryForId = "SELECT questionId FROM " + TB_NAME1 + " WHERE question='" + ques + "'";
+        // e.g. SELECT questionId FROM questions WHERE question='Which material is most dense?'
+        Cursor c = db.rawQuery(queryForId, null);
+        String id = "none";
+        // if id is not changed to the questionId value, then queryForAnswer will have no matches in db
+
+        if(c.moveToFirst()) {
+            id = c.getString(0);
+        } while(c.moveToNext());
+
+        String queryForAnswer = "SELECT answer FROM " + TB_NAME2 + " WHERE questionId='" + id + "'";
+        // e.g. SELECT answer FROM answers WHERE questionId='1'
+
+        c = db.rawQuery(queryForAnswer, null);
+        String correctAnswer = null;
+        if(c.moveToFirst()) {
+            correctAnswer = c.getString(0);
+            // (1) as second column
+            // first column is questionId
+            // second column is answer
+        } while(c.moveToNext());
+
+        db.close();
+        c.close();
+
+        return correctAnswer;
     }
 
     public int getTotalNumberOfQuestions(String table, String category) {

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
-
+<!--
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
@@ -15,6 +15,18 @@
         android:textStyle="bold"
         android:textSize="@dimen/title_size"
         android:gravity="center_vertical|center"
+        android:contentDescription="@string/app_title_asc_description"
+        />
+        -->
+    <ImageView
+        android:src="@drawable/start_screen"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/app_title"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:contentDescription="@string/app_title_asc_description"
         />
 
