@@ -120,17 +120,18 @@ public class OnlineStart extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // return result from online game
+        // if host game returns
         if (requestCode == 1) {
             // resultCode == Activity.RESULT_OK, game finished cleanly
             if (resultCode == Activity.RESULT_OK) {
                 String scoreText = data.getStringExtra("scoreKey");
-                int numQuestions = data.getIntExtra("numQuestionsKey", 0);
+                //int numQuestions = data.getIntExtra("numQuestionsKey", 0);
                 // 0 here is the default value
                 // if the number of questions cant be received from the intent
                 // numQuestions will be 0
                 TextView a = (TextView) findViewById(R.id.online_game_mode_score);
-                String str = scoreText + " / " + numQuestions;
-                a.setText(str);
+                //String str = scoreText + " / " + numQuestions;
+                a.setText(scoreText);
             }
         }
     }
