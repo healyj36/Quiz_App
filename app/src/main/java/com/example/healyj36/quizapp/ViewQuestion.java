@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,6 +22,13 @@ public class ViewQuestion extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_entry);
+        ProgressBar lpp = (ProgressBar) findViewById(R.id.local_player_progress);
+        ProgressBar op = (ProgressBar) findViewById(R.id.opponent_progress);
+        ProgressBar cdt = (ProgressBar) findViewById(R.id.countdown_timer);
+        lpp.setVisibility(View.GONE);
+        op.setVisibility(View.GONE);
+        cdt.setVisibility(View.GONE);
+
 
         Intent calledFromMain = getIntent();
 

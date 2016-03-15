@@ -56,12 +56,16 @@ public class HostGame extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.server_activity);
-
-        TextView infoIp = (TextView) findViewById(R.id.infoIp);
-        msg = (TextView) findViewById(R.id.msg);
-        EditText serverMsg = (EditText) findViewById(R.id.title);
-        serverMsg.setVisibility(View.GONE);
+        setContentView(R.layout.question_entry);
+        // hide views
+            // hide local player progress bar
+            // hide opponent progress bar
+            // hide timer progress bar
+            // hide button1 progress bar
+            // hide button2 progress bar
+            // hide button3 progress bar
+            // hide button4 progress bar
+        // set isConnected == false
 
         Bundle extras = getIntent().getExtras();
         String numberOfQuestionsString = "0";
@@ -77,11 +81,8 @@ public class HostGame extends Activity {
 
         allQuestions = DB_FUNC.getQuestionsRandom(numberOfQuestions, subject);
 
-        infoIp.setText(getIpAddress());
-
         MyHostTask myHostTask = new MyHostTask();
         myHostTask.execute();
-        setContentView(R.layout.question_entry);
 
         ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
         ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
@@ -95,10 +96,8 @@ public class HostGame extends Activity {
             opponent_progress.getProgressDrawable().setColorFilter(Color.parseColor("#AA8D00"), android.graphics.PorterDuff.Mode.MULTIPLY);
         }
 
-
         TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
         question_text_view.setText(getIpAddress());
-
     }
 
     @Override
@@ -170,102 +169,101 @@ public class HostGame extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-
             socket = null;
             dataInputStream = null;
             dataOutputStream = null;
-
             try {
+                // set isConnected == true
+                // call on progress update
+                // set isConnected == false
                 serverSocket = new ServerSocket(SocketServerPORT);
-                    socket = serverSocket.accept();
+                socket = serverSocket.accept();
 
-                    dataInputStream = new DataInputStream(socket.getInputStream());
-                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                dataInputStream = new DataInputStream(socket.getInputStream());
+                dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
+                int i = 0;
+                questionAndOptions = getQuestionAndAnswers(i);
+                correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
 
-                    int i = 0;
-                    questionAndOptions = getQuestionAndAnswers(i);
-                    correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
+                dataOutputStream.writeInt(numberOfQuestions);
+                dataOutputStream.flush();
 
-                    dataOutputStream.writeInt(numberOfQuestions);
-                    dataOutputStream.flush();
-
-                    i++;
-                    hostChoice = null;
-                    clientChoice = null;
-                    isHostCorrect = false;
-                    isClientCorrect = false;
-                    while (i < numberOfQuestions) {
-                        Thread clThread = new Thread(new clientThread());
-                        clThread.start();
-                        /*
-
-                        try {
-                            dataOutputStream.writeUTF(questionAndOptions);
-                            dataOutputStream.writeBoolean(isClientCorrect);
-                            dataOutputStream.flush();
-
-                            clientChoice = dataInputStream.readUTF();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            isClientCorrect = checkAnswer(clientChoice, correctAnswer);
-                        }
-                         */
-
-                        //ask host q and get response
-                        publishProgress(questionAndOptions);
-
-                        // get choice from button press
-                        // TODO think of a better method than busy waiting
-                        while (hostChoice == null) {
-                        }
-
-                        isHostCorrect = checkAnswer(hostChoice, correctAnswer);
-
-                        if (isHostCorrect) {
-                            hostScore++;
-                        }
-
-                        hostChoice = null;
-
-                        clThread.join();
-                        if (isClientCorrect) {
-                            clientScore++;
-                        }
-                        isFirstQuestion = false;
-                        questionAndOptions = getQuestionAndAnswers(i);
-                        correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
-
-                        i++;
-                    }
-
+                i++;
+                hostChoice = null;
+                clientChoice = null;
+                isHostCorrect = false;
+                isClientCorrect = false;
+                while (i < numberOfQuestions) {
                     Thread clThread = new Thread(new clientThread());
                     clThread.start();
+                    /*
 
+                    try {
+                        dataOutputStream.writeUTF(questionAndOptions);
+                        dataOutputStream.writeBoolean(isClientCorrect);
+                        dataOutputStream.flush();
+
+                        clientChoice = dataInputStream.readUTF();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        isClientCorrect = checkAnswer(clientChoice, correctAnswer);
+                    }
+                     */
+
+                    //ask host q and get response
                     publishProgress(questionAndOptions);
 
+                    // get choice from button press
+                    // TODO think of a better method than busy waiting
                     while (hostChoice == null) {
                     }
 
                     isHostCorrect = checkAnswer(hostChoice, correctAnswer);
+
                     if (isHostCorrect) {
                         hostScore++;
                     }
+
+                    hostChoice = null;
+
+                    clThread.join();
                     if (isClientCorrect) {
                         clientScore++;
                     }
+                    isFirstQuestion = false;
+                    questionAndOptions = getQuestionAndAnswers(i);
+                    correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
 
-                    finalScores = "[" + hostScore + ", " + clientScore +"]";
-                    dataOutputStream.writeUTF(finalScores);
-                    dataOutputStream.flush();
+                    i++;
+                }
+
+                Thread clThread = new Thread(new clientThread());
+                clThread.start();
+
+                publishProgress(questionAndOptions);
+
+                while (hostChoice == null) {
+                }
+
+                isHostCorrect = checkAnswer(hostChoice, correctAnswer);
+                if (isHostCorrect) {
+                    hostScore++;
+                }
+                clThread.join();
+                if (isClientCorrect) {
+                    clientScore++;
+                }
+
+                finalScores = "[" + hostScore + ", " + clientScore +"]";
+                dataOutputStream.writeUTF(finalScores);
+                dataOutputStream.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-
-
                 if (dataInputStream != null) {
                     try {
                         dataInputStream.close();
@@ -273,14 +271,14 @@ public class HostGame extends Activity {
                         e.printStackTrace();
                     }
                 }
-
                 if (dataOutputStream != null) {
                     try {
                         dataOutputStream.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }  if (socket != null) {
+                }
+                if (socket != null) {
                     try {
                         socket.close();
                     } catch (IOException e) {
@@ -294,6 +292,15 @@ public class HostGame extends Activity {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
+            // if isConnected == false
+                // show local player progress bar
+                // show opponent progress bar
+                // show timer progress bar
+                // show button1 progress bar
+                // show button2 progress bar
+                // show button3 progress bar
+                // show button4 progress bar
+
             ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
             ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
             if(isFirstQuestion) {

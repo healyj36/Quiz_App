@@ -33,6 +33,10 @@ public class InfiniteGame extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_entry);
+        ProgressBar lpp = (ProgressBar) findViewById(R.id.local_player_progress);
+        ProgressBar op = (ProgressBar) findViewById(R.id.opponent_progress);
+        lpp.setVisibility(View.GONE);
+        op.setVisibility(View.GONE);
 
         try {
             DB_FUNC.createDatabase();

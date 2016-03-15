@@ -13,7 +13,7 @@
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_weight="0.03">
+            android:layout_weight="0.05">
 
             <ProgressBar
                 style="@style/Widget.ProgressBar.Vertical"
@@ -29,7 +29,7 @@
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_weight="0.94"
+            android:layout_weight="0.9"
             android:gravity="center_vertical|center">
             <TextView
                 android:id="@+id/question_id_text_view"
@@ -52,7 +52,7 @@
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_weight="0.03">
+            android:layout_weight="0.05">
             <ProgressBar
                 style="@style/Widget.ProgressBar.Vertical"
                 android:id="@+id/opponent_progress"
@@ -138,12 +138,12 @@
 
         <ProgressBar
             style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/countdown_timer"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:paddingLeft="@dimen/padding_5dp"
             android:paddingRight="@dimen/padding_5dp"
-            android:id="@+id/countdown_timer"
             android:progress="0"
             android:max="9"/>
 
