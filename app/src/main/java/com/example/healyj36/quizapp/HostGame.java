@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.DataInputStream;
@@ -49,6 +50,8 @@ public class HostGame extends Activity {
     boolean isHostCorrect;
     String hostChoice;
     boolean isFirstQuestion = true;
+    int hostScore = 0;
+    int clientScore = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +84,9 @@ public class HostGame extends Activity {
         */
         MyHostTask myHostTask = new MyHostTask();
         myHostTask.execute();
-        //setContentView(R.layout.question_entry);
-        //TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
-        //question_text_view.setText(getIpAddress());
+        setContentView(R.layout.question_entry);
+        TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
+        question_text_view.setText(getIpAddress());
 
     }
 
@@ -156,9 +159,6 @@ public class HostGame extends Activity {
                 ", " + option3 +
                 ", " + option4 +
                 ", " + isClientCorrect + "]";
-        /*
-        [questionText, option1, option2, option3, option4, isClientCorrect]
-                */
     }
 
     private String getQuestion(int index) {
@@ -167,7 +167,7 @@ public class HostGame extends Activity {
         return question.get("question");
     }
 
-    public void getResponse(View view) {
+    public void getAnswer(View view) {
         hostChoice = ((Button) view).getText().toString();
     }
 
@@ -178,14 +178,6 @@ public class HostGame extends Activity {
         String finalScores = "";
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            setContentView(R.layout.question_entry);
-            TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
-            question_text_view.setText(getIpAddress());
-        }
-
-        @Override
         protected Void doInBackground(Void... params) {
 
             socket = null;
@@ -194,98 +186,96 @@ public class HostGame extends Activity {
 
             try {
                 serverSocket = new ServerSocket(SocketServerPORT);
-                socket = serverSocket.accept();
+                    socket = serverSocket.accept();
 
-                dataInputStream = new DataInputStream(socket.getInputStream());
-                dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                    dataInputStream = new DataInputStream(socket.getInputStream());
+                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
-                String msgReply = count + ": DEFAULT MESSAGE";
+                    String msgReply = count + ": DEFAULT MESSAGE";
 
-                int i = 0;
-                questionAndOptions = getQuestionAndAnswers(i);
-                correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
+                    int i = 0;
+                    questionAndOptions = getQuestionAndAnswers(i);
+                    correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
 
-                dataOutputStream.writeInt(numberOfQuestions);
-                dataOutputStream.flush();
+                    dataOutputStream.writeInt(numberOfQuestions);
+                    dataOutputStream.flush();
 
-                i++;
-                hostChoice = null;
-                clientChoice = null;
-                isHostCorrect = false;
-                isClientCorrect = false;
-                int hostScore = 0;
-                int clientScore = 0;
-                while (i < numberOfQuestions) {
+                    i++;
+                    hostChoice = null;
+                    clientChoice = null;
+                    isHostCorrect = false;
+                    isClientCorrect = false;
+                    while (i < numberOfQuestions) {
+                        Thread clThread = new Thread(new clientThread());
+                        clThread.start();
+                        /*
+
+                        try {
+                            dataOutputStream.writeUTF(questionAndOptions);
+                            dataOutputStream.writeBoolean(isClientCorrect);
+                            dataOutputStream.flush();
+
+                            clientChoice = dataInputStream.readUTF();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            isClientCorrect = checkAnswer(clientChoice, correctAnswer);
+                        }
+                         */
+
+                        //ask host q and get response
+                        publishProgress(questionAndOptions);
+
+                        // get choice from button press
+                        // TODO think of a better method than busy waiting
+                        while (hostChoice == null) {
+                        }
+
+                        isHostCorrect = checkAnswer(hostChoice, correctAnswer);
+                        /*Log.d(HostGame.class.getSimpleName(), "lets check is host right");
+                        Log.d(HostGame.class.getSimpleName(), "quesiton is " + questionAndOptions);
+                        Log.d(HostGame.class.getSimpleName(), "answer is " + correctAnswer);
+                        Log.d(HostGame.class.getSimpleName(), "host chooses " + hostChoice);
+                        Log.d(HostGame.class.getSimpleName(), "host is " + isHostCorrect);*/
+
+                        if (isHostCorrect) {
+                            hostScore++;
+                        }
+
+                        hostChoice = null;
+
+                        clThread.join();
+                        if (isClientCorrect) {
+                            clientScore++;
+                        }
+                        isFirstQuestion = false;
+                        questionAndOptions = getQuestionAndAnswers(i);
+                        Log.d(HostGame.class.getSimpleName(), questionAndOptions);
+                        correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
+                        Log.d(HostGame.class.getSimpleName(), correctAnswer);
+
+                        i++;
+                    }
+
                     Thread clThread = new Thread(new clientThread());
                     clThread.start();
-                    /*
 
-                    try {
-                        dataOutputStream.writeUTF(questionAndOptions);
-                        dataOutputStream.writeBoolean(isClientCorrect);
-                        dataOutputStream.flush();
-
-                        clientChoice = dataInputStream.readUTF();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        isClientCorrect = checkAnswer(clientChoice, correctAnswer);
-                    }
-                     */
-
-                    //ask host q and get response
                     publishProgress(questionAndOptions);
 
-                    // get choice from button press
-                    // TODO think of a better method than busy waiting
                     while (hostChoice == null) {
                     }
 
                     isHostCorrect = checkAnswer(hostChoice, correctAnswer);
-                    Log.d(HostGame.class.getSimpleName(), "lets check is host right");
-                    Log.d(HostGame.class.getSimpleName(), "quesiton is " + questionAndOptions);
-                    Log.d(HostGame.class.getSimpleName(), "answer is " + correctAnswer);
-                    Log.d(HostGame.class.getSimpleName(), "host chooses " + hostChoice);
-                    Log.d(HostGame.class.getSimpleName(), "host is " + isHostCorrect);
-
                     if (isHostCorrect) {
                         hostScore++;
                     }
-
-                    hostChoice = null;
-
-                    clThread.join();
                     if (isClientCorrect) {
                         clientScore++;
                     }
-                    isFirstQuestion = false;
-                    questionAndOptions = getQuestionAndAnswers(i);
-                    Log.d(HostGame.class.getSimpleName(), questionAndOptions);
-                    correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
-                    Log.d(HostGame.class.getSimpleName(), correctAnswer);
 
-                    i++;
-                }
-
-                Thread clThread = new Thread(new clientThread());
-                clThread.start();
-
-                publishProgress(questionAndOptions);
-
-                while (hostChoice == null) {
-                }
-
-                isHostCorrect = checkAnswer(hostChoice, correctAnswer);
-                if (isHostCorrect) {
-                    hostScore++;
-                }
-                if (isClientCorrect) {
-                    clientScore++;
-                }
-
-                finalScores = "[hostScore: " + hostScore + ", clientScore: " + clientScore +"]";
-                dataOutputStream.writeUTF(finalScores);
-//                dataOutputStream.flush();
+                    finalScores = "[hostScore: " + hostScore + ", clientScore: " + clientScore +"]";
+                    dataOutputStream.writeUTF(finalScores);
+    //                dataOutputStream.flush();
             } catch (IOException e) {
                 Log.d(HostGame.class.getSimpleName(), "IOEXCEPTIONLOL");
                 e.printStackTrace();
@@ -333,6 +323,12 @@ public class HostGame extends Activity {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
+            ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
+            ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
+            if(isFirstQuestion) {
+                local_player_progress.setMax(numberOfQuestions);
+                opponent_progress.setMax(numberOfQuestions);
+            }
             TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
             question_text_view.setText(questionText);
             TextView option1TextView = (TextView) findViewById(R.id.option1_button_text_view);
@@ -348,6 +344,14 @@ public class HostGame extends Activity {
                 TextView chosen_answer_text_view = (TextView) findViewById(R.id.chosen_answer_text_view);
                 String str = "Your previous answer was " + isHostCorrect;
                 chosen_answer_text_view.setText(str);
+
+                if(isHostCorrect) {
+                    local_player_progress.incrementProgressBy(1);
+                }
+
+                if(isClientCorrect) {
+                    opponent_progress.incrementProgressBy(1);
+                }
             }
         }
 
@@ -376,9 +380,9 @@ public class HostGame extends Activity {
     }
 
     private String packageForClient(String str) {
-        String bool = String.valueOf(isClientCorrect);
         str = str.substring(0, str.length()-1);
-        str = str + ", " + bool + "]";
+        str = str + ", " + hostScore + ", " + clientScore +"]";
+        //return [q, o1, o2, o3, o4, hostScore, clientScore]
         return str;
     }
 
