@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
             android:textSize="20sp"
-            android:onClick="getAnswer"
+            android:onClick="getResponse"
             android:background="@drawable/buttonshape"
             android:textColor="#FFFFFF"/>
 
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
             android:textSize="20sp"
-            android:onClick="getAnswer"
+            android:onClick="getResponse"
             android:background="@drawable/buttonshape"
             android:textColor="#FFFFFF"/>
 
@@ -81,10 +81,10 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
             android:textSize="20sp"
-            android:onClick="getAnswer"
+            android:onClick="getResponse"
             android:background="@drawable/buttonshape"
             android:textColor="#FFFFFF"/>
-<!-- TODO change getAnswer to getResponse -->
+
         <Button
             android:id="@+id/option4_button_text_view"
             android:text="@string/option4_temp"
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
             android:textSize="20sp"
-            android:onClick="getAnswer"
+            android:onClick="getResponse"
             android:background="@drawable/buttonshape"
             android:textColor="#FFFFFF"/>
 

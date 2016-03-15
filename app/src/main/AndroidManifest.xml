@@ -67,12 +67,12 @@
         </activity>
         <activity
             android:name=".HostGame"
-            android:label="Host Game"
+            android:label="Host Game - 1v1 Game Mode"
             android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".JoinGame"
-            android:label="Join Game"
+            android:label="Join Game - 1v1 Game Mode"
             android:theme="@style/AppTheme">
         </activity>
 

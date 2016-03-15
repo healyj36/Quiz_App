@@ -26,7 +26,6 @@ public class AllQuestions extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.all_questions);
-        initCustomTypeFace(R.id.questionsTitleTextView);
 
         try {
             DB_FUNC.createDatabase();
@@ -37,7 +36,7 @@ public class AllQuestions extends ListActivity {
         ArrayList<HashMap<String, String>> listQuestions = DB_FUNC.getAllQuestions();
 
         ArrayList<String> allQuestionNames = DB_FUNC.getAllQuestionNames();
-        if(listQuestions.size() != 0){
+        if(listQuestions.size() != 0) {
             lvQuestions = getListView();
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(

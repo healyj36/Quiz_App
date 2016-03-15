@@ -45,14 +45,10 @@ public class JoinGame extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.client_activity);
+        setContentView(R.layout.join_game_activity);
 
         editTextAddress = (EditText) findViewById(R.id.address);
-        buttonSend = (Button) findViewById(R.id.send);
-        textResponse = (TextView) findViewById(R.id.response);
-        // TODO remove message edit view
-        clientMsg = (EditText)findViewById(R.id.client_msg);
-        clientMsg.setVisibility(View.GONE);
+        buttonSend = (Button) findViewById(R.id.connect);
     }
 
     // "connect" button pressed to start game
@@ -252,7 +248,7 @@ public class JoinGame extends Activity {
         option4TextView.setText(option4);
     }
 
-    public void getAnswer(View view) {
+    public void getResponse(View view) {
         // TODO = null, fix busy waiting
         clientChoice = null;
         clientChoice = ((Button) view).getText().toString();
