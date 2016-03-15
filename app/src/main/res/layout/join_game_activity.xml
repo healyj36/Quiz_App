@@ -7,34 +7,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical">
 
-
-    <EditText
-        android:id="@+id/client_msg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/chat_client_message_hint" />
     <EditText
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/chat_client_address_hint"
+        android:hint="@string/online_host_address_hint"
         android:inputType="text"/>
     <Button
-        android:id="@+id/send"
+        android:id="@+id/connect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/chat_client_send_button"
+        android:text="@string/online_join_button_view"
         android:onClick="sendMessage"/>
-    <!--
-    <Button
-        android:id="@+id/clear"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Clear"/>
-        -->
-    <TextView
-        android:id="@+id/response"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
 </LinearLayout>

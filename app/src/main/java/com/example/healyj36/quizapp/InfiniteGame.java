@@ -86,7 +86,7 @@ public class InfiniteGame extends Activity {
         showDialog();
     }
 
-    public void getAnswer(View view) {
+    public void getResponse(View view) {
         Intent returnIntent = new Intent();
 
         String chosenAnswer = ((Button) view).getText().toString();

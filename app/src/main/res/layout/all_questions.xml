@@ -6,24 +6,6 @@
     tools:context=".AllQuestions">
 
     <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-
-        <TextView
-            android:id="@+id/questionsTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_5dp"
-            android:text="@string/allQuestions"
-            android:textSize="@dimen/sub_title_size"
-            android:gravity="center_vertical|center"
-            android:layout_weight="1" />
-    </TableRow>
-
-
-    <TableRow
         android:id="@+id/tableRow2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >

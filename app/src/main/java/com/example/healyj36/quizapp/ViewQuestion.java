@@ -42,7 +42,7 @@ public class ViewQuestion extends Activity {
 
     }
 
-    public void getAnswer(View view) {
+    public void getResponse(View view) {
         String chosenAnswer = ((Button) view).getText().toString();
 
         TextView t = (TextView) findViewById(R.id.question_text_view);
