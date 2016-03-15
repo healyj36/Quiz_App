@@ -7,25 +7,66 @@
     <LinearLayout android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:gravity="center">
-        <TextView
-            android:id="@+id/question_id_text_view"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+<!-- TODO give the vertical progress bars a minimum width -->
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.03">
 
-        <TextView
-            android:id="@+id/question_text_view"
-            android:text="@string/question_temp"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="@dimen/padding_5dp"
-            android:gravity="center_vertical|center"
-            android:textColor="#444444"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            <ProgressBar
+                style="@style/Widget.ProgressBar.Vertical"
+                android:id="@+id/local_player_progress"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="@dimen/padding_5dp"
+                android:paddingLeft="@dimen/padding_5dp"
+                android:paddingRight="@dimen/padding_5dp"
+                android:progress="0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.94"
+            android:gravity="center_vertical|center">
+            <TextView
+                android:id="@+id/question_id_text_view"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/question_text_view"
+                android:text="@string/question_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/padding_5dp"
+                android:gravity="center_vertical|center"
+                android:textColor="#444444"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.03">
+            <ProgressBar
+                style="@style/Widget.ProgressBar.Vertical"
+                android:id="@+id/opponent_progress"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="@dimen/padding_5dp"
+                android:paddingLeft="@dimen/padding_5dp"
+                android:paddingRight="@dimen/padding_5dp"
+                android:progress="0" />
+        </RelativeLayout>
+
     </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_height="match_parent"
@@ -33,17 +74,6 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:gravity="center">
-
-        <ProgressBar
-            style="@style/Widget.ProgressBar.Vertical"
-            android:layout_width="12dip"
-            android:layout_height="300dip"
-            android:layout_gravity="center_horizontal"
-            android:paddingLeft="@dimen/padding_5dp"
-            android:paddingRight="@dimen/padding_5dp"
-            android:id="@+id/local_player_progress"
-            android:progress="0"
-            android:gravity="left" />
 
         <Button
             android:id="@+id/option1_button_text_view"
@@ -96,19 +126,6 @@
             android:background="@drawable/buttonshape"
             android:textColor="#FFFFFF"/>
 
-
-
-
-        <ProgressBar
-            style="@style/Widget.ProgressBar.Vertical"
-            android:layout_width="12dip"
-            android:layout_height="300dip"
-            android:layout_gravity="center_horizontal"
-            android:paddingLeft="@dimen/padding_5dp"
-            android:paddingRight="@dimen/padding_5dp"
-            android:id="@+id/opponent_progress"
-            android:progress="0"
-            android:gravity="right"/>
     </LinearLayout>
 
     <LinearLayout android:layout_height="match_parent"

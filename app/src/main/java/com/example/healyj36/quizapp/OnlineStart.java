@@ -125,13 +125,31 @@ public class OnlineStart extends Activity {
             // resultCode == Activity.RESULT_OK, game finished cleanly
             if (resultCode == Activity.RESULT_OK) {
                 String scoreText = data.getStringExtra("scoreKey");
-                //int numQuestions = data.getIntExtra("numQuestionsKey", 0);
+                scoreText = scoreText.substring(1, scoreText.length() - 1);
+                String[] scores = scoreText.split(", ");
+
+                boolean wasHost = data.getBooleanExtra("wasHostKey", false);
+
+                int numQuestions = data.getIntExtra("numQuestionsKey", 0);
                 // 0 here is the default value
                 // if the number of questions cant be received from the intent
                 // numQuestions will be 0
+
+                int yourScore, theirScore;
+                String str = "The game is finished.\n";
+                str += "There was " + numQuestions + " questions.\n";
+                if(wasHost) {
+                    yourScore=Integer.parseInt(scores[0]);
+                    theirScore=Integer.parseInt(scores[1]);
+                } else {
+                    yourScore=Integer.parseInt(scores[1]);
+                    theirScore=Integer.parseInt(scores[0]);
+                }
+
+                str += "You correctly answered " + yourScore + " questions.\n";
+                str += "Your opponent correctly answered " + theirScore + " questions.\n";
                 TextView a = (TextView) findViewById(R.id.online_game_mode_score);
-                //String str = scoreText + " / " + numQuestions;
-                a.setText(scoreText);
+                a.setText(str);
             }
         }
     }

@@ -2,6 +2,8 @@ package com.example.healyj36.quizapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,40 +29,38 @@ import java.util.HashMap;
  * Created by Jordan on 11/03/2016.
  */
 public class HostGame extends Activity {
-    private DBFunc DB_FUNC = new DBFunc(this);
+    private final DBFunc DB_FUNC = new DBFunc(this);
 
-    EditText serverMsg;
-
-    TextView infoIp, msg;
-    ServerSocket serverSocket = null;
-    Socket socket;
-    int numberOfQuestions;
+    private TextView msg;
+    private ServerSocket serverSocket = null;
+    private Socket socket;
+    private int numberOfQuestions;
 
     private String questionText, option1, option2, option3, option4;
 
     private ArrayList<HashMap<String, String>> allQuestions = new ArrayList<>();
 
-    DataInputStream dataInputStream;
-    DataOutputStream dataOutputStream;
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
 
-    String clientChoice;
-    boolean isClientCorrect;
-    String correctAnswer;
-    String questionAndOptions;
-    boolean isHostCorrect;
-    String hostChoice;
-    boolean isFirstQuestion = true;
-    int hostScore = 0;
-    int clientScore = 0;
+    private String clientChoice;
+    private boolean isClientCorrect;
+    private String correctAnswer;
+    private String questionAndOptions;
+    private boolean isHostCorrect;
+    private String hostChoice;
+    private boolean isFirstQuestion = true;
+    private int hostScore = 0;
+    private int clientScore = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.server_activity);
 
-        infoIp = (TextView) findViewById(R.id.infoIp);
+        TextView infoIp = (TextView) findViewById(R.id.infoIp);
         msg = (TextView) findViewById(R.id.msg);
-        serverMsg = (EditText) findViewById(R.id.title);
+        EditText serverMsg = (EditText) findViewById(R.id.title);
         serverMsg.setVisibility(View.GONE);
 
         Bundle extras = getIntent().getExtras();
@@ -78,13 +78,24 @@ public class HostGame extends Activity {
         allQuestions = DB_FUNC.getQuestionsRandom(numberOfQuestions, subject);
 
         infoIp.setText(getIpAddress());
-/*
-        Thread socketServerThread = new Thread(new SocketServerThread());
-        socketServerThread.start();
-        */
+
         MyHostTask myHostTask = new MyHostTask();
         myHostTask.execute();
         setContentView(R.layout.question_entry);
+
+        ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
+        ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            // for lollipop and above versions. as this method only works for lollipop or above
+            local_player_progress.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#008800")));
+            opponent_progress.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#AA8D00")));
+        } else {
+            // do something for devices running an SDK lower than lollipop
+            local_player_progress.getProgressDrawable().setColorFilter(Color.parseColor("#008800"), android.graphics.PorterDuff.Mode.MULTIPLY);
+            opponent_progress.getProgressDrawable().setColorFilter(Color.parseColor("#AA8D00"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        }
+
+
         TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
         question_text_view.setText(getIpAddress());
 
@@ -98,7 +109,6 @@ public class HostGame extends Activity {
         // close sockets here
         if (serverSocket != null) {
             try {
-                Log.d(HostGame.class.getSimpleName(), "ON_DESPRTOT_CLOSING SERVERSOCKET");
                 serverSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -106,7 +116,6 @@ public class HostGame extends Activity {
         }
         if (socket != null) {
             try {
-                Log.d(HostGame.class.getSimpleName(), "ON_DESPRTOT_CLOSING SOCKET");
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -144,37 +153,19 @@ public class HostGame extends Activity {
                 ", " + option4 + "]";
     }
 
-    private String getQuestionAndAnswers(int index, boolean previousAnswer) {
-        HashMap<String, String> question = allQuestions.get(index);
-
-        questionText = question.get("question");
-        option1 = question.get("option1");
-        option2 = question.get("option2");
-        option3 = question.get("option3");
-        option4 = question.get("option4");
-
-        return "[" + questionText +
-                ", " + option1 +
-                ", " + option2 +
-                ", " + option3 +
-                ", " + option4 +
-                ", " + isClientCorrect + "]";
-    }
-
     private String getQuestion(int index) {
         HashMap<String, String> question = allQuestions.get(index);
 
         return question.get("question");
     }
 
-    public void getAnswer(View view) {
+    public void getResponse(View view) {
         hostChoice = ((Button) view).getText().toString();
     }
 
     public class MyHostTask extends AsyncTask<Void, String, Void> {
 
         static final int SocketServerPORT = 8080;
-        int count = 0;
         String finalScores = "";
 
         @Override
@@ -191,7 +182,6 @@ public class HostGame extends Activity {
                     dataInputStream = new DataInputStream(socket.getInputStream());
                     dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
-                    String msgReply = count + ": DEFAULT MESSAGE";
 
                     int i = 0;
                     questionAndOptions = getQuestionAndAnswers(i);
@@ -232,11 +222,6 @@ public class HostGame extends Activity {
                         }
 
                         isHostCorrect = checkAnswer(hostChoice, correctAnswer);
-                        /*Log.d(HostGame.class.getSimpleName(), "lets check is host right");
-                        Log.d(HostGame.class.getSimpleName(), "quesiton is " + questionAndOptions);
-                        Log.d(HostGame.class.getSimpleName(), "answer is " + correctAnswer);
-                        Log.d(HostGame.class.getSimpleName(), "host chooses " + hostChoice);
-                        Log.d(HostGame.class.getSimpleName(), "host is " + isHostCorrect);*/
 
                         if (isHostCorrect) {
                             hostScore++;
@@ -250,9 +235,7 @@ public class HostGame extends Activity {
                         }
                         isFirstQuestion = false;
                         questionAndOptions = getQuestionAndAnswers(i);
-                        Log.d(HostGame.class.getSimpleName(), questionAndOptions);
                         correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
-                        Log.d(HostGame.class.getSimpleName(), correctAnswer);
 
                         i++;
                     }
@@ -273,34 +256,18 @@ public class HostGame extends Activity {
                         clientScore++;
                     }
 
-                    finalScores = "[hostScore: " + hostScore + ", clientScore: " + clientScore +"]";
+                    finalScores = "[" + hostScore + ", " + clientScore +"]";
                     dataOutputStream.writeUTF(finalScores);
-    //                dataOutputStream.flush();
+                    dataOutputStream.flush();
             } catch (IOException e) {
-                Log.d(HostGame.class.getSimpleName(), "IOEXCEPTIONLOL");
                 e.printStackTrace();
-                final String errMsg = e.toString();
-                HostGame.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        msg.setText(errMsg);
-                    }
-                });
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+
 
                 if (dataInputStream != null) {
                     try {
-                        Log.d(HostGame.class.getSimpleName(), "CLOSING DATAINSTREMA");
                         dataInputStream.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -309,14 +276,18 @@ public class HostGame extends Activity {
 
                 if (dataOutputStream != null) {
                     try {
-                        Log.d(HostGame.class.getSimpleName(), "CLOSING DATAOUTSTREAM");
                         dataOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }  if (socket != null) {
+                    try {
+                        socket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-            Log.d(HostGame.class.getSimpleName(), "RETURNING NU.LLLL");
             return null;
         }
 
@@ -360,22 +331,16 @@ public class HostGame extends Activity {
             super.onPostExecute(result);
             Intent returnIntent = new Intent();
             returnIntent.putExtra("scoreKey", finalScores);
+            returnIntent.putExtra("numQuestionsKey", numberOfQuestions);
+            returnIntent.putExtra("wasHostKey", true);
             setResult(Activity.RESULT_OK, returnIntent);
             finish();
-
-
-           /* super.onPostExecute(result);
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("scoreKey", scores);
-            returnIntent.putExtra("numQuestionsKey", numQuestions);
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();*/
         }
     }
 
 
 
-    public boolean checkAnswer(String a, String b) {
+    private boolean checkAnswer(String a, String b) {
         return a.equals(b);
     }
 
@@ -399,28 +364,6 @@ public class HostGame extends Activity {
             isClientCorrect = checkAnswer(clientChoice, correctAnswer);
         }
     }
-
-    private void changeView() {
-
-        TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
-        question_text_view.setText(questionText);
-        TextView option1TextView = (TextView) findViewById(R.id.option1_button_text_view);
-        option1TextView.setText(option1);
-        TextView option2TextView = (TextView) findViewById(R.id.option2_button_text_view);
-        option2TextView.setText(option2);
-        TextView option3TextView = (TextView) findViewById(R.id.option3_button_text_view);
-        option3TextView.setText(option3);
-        TextView option4TextView = (TextView) findViewById(R.id.option4_button_text_view);
-        option4TextView.setText(option4);
-
-        //if(isHostCorrect != null) {
-            TextView chosen_answer_text_view = (TextView) findViewById(R.id.chosen_answer_text_view);
-            String str = "Your previous answer was " + isHostCorrect;
-            chosen_answer_text_view.setText(str);
-        //}
-
-    }
-
 
     private String getIpAddress(){
         // TODO for finding address at home
