@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.DataInputStream;
@@ -34,6 +35,8 @@ public class JoinGame extends Activity {
     TextView textResponse;
     EditText editTextAddress;
     Button buttonSend;
+    int hostScore = 0;
+    int clientScore = 0;
 
     EditText clientMsg;
 
@@ -103,6 +106,7 @@ public class JoinGame extends Activity {
                 dataInputStream = new DataInputStream(socket.getInputStream());
 
                 numQuestions = dataInputStream.readInt();
+
                 for(int i = 0; i < numQuestions; i++) {
                     questionWithOptions = dataInputStream.readUTF();
                     Log.d(JoinGame.class.getSimpleName(), questionWithOptions);
@@ -170,7 +174,12 @@ public class JoinGame extends Activity {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-
+            ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
+            ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
+            if(isFirstQuestion) {
+                local_player_progress.setMax(numQuestions);
+                opponent_progress.setMax(numQuestions);
+            }
             // lading dialog. waiting for question to be displayed
                 //loadingDialog.show();
 
@@ -197,10 +206,27 @@ public class JoinGame extends Activity {
             // finished loading
                 //loadingDialog.dismiss();
 
+            //return [q, o1, o2, o3, o4, hostScore, clientScore]
             if(!isFirstQuestion) {//you need to say if the last response was correct or no
                 TextView chosen_answer_text_view = (TextView) findViewById(R.id.chosen_answer_text_view);
-                String str = "Your previous answer was " + ary[5];
+                ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
+                ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
+                String str = "Your previous answer was ";
+
+                if(clientScore != Integer.parseInt(ary[6])) {//if client score has gone up
+                    clientScore = Integer.parseInt(ary[6]);
+                    str += "true";
+                    local_player_progress.incrementProgressBy(1);
+                }
+                else {
+                    str += "false";
+                }
                 chosen_answer_text_view.setText(str);
+
+                if(hostScore != Integer.parseInt(ary[5])) {//if host score has gone up
+                    hostScore = Integer.parseInt(ary[5]);
+                    opponent_progress.incrementProgressBy(1);
+                }
             }
         }
     }

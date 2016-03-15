@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.DataInputStream;
@@ -49,6 +50,8 @@ public class HostGame extends Activity {
     boolean isHostCorrect;
     String hostChoice;
     boolean isFirstQuestion = true;
+    int hostScore = 0;
+    int clientScore = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,8 +205,6 @@ public class HostGame extends Activity {
                     clientChoice = null;
                     isHostCorrect = false;
                     isClientCorrect = false;
-                    int hostScore = 0;
-                    int clientScore = 0;
                     while (i < numberOfQuestions) {
                         Thread clThread = new Thread(new clientThread());
                         clThread.start();
@@ -231,11 +232,11 @@ public class HostGame extends Activity {
                         }
 
                         isHostCorrect = checkAnswer(hostChoice, correctAnswer);
-                        Log.d(HostGame.class.getSimpleName(), "lets check is host right");
+                        /*Log.d(HostGame.class.getSimpleName(), "lets check is host right");
                         Log.d(HostGame.class.getSimpleName(), "quesiton is " + questionAndOptions);
                         Log.d(HostGame.class.getSimpleName(), "answer is " + correctAnswer);
                         Log.d(HostGame.class.getSimpleName(), "host chooses " + hostChoice);
-                        Log.d(HostGame.class.getSimpleName(), "host is " + isHostCorrect);
+                        Log.d(HostGame.class.getSimpleName(), "host is " + isHostCorrect);*/
 
                         if (isHostCorrect) {
                             hostScore++;
@@ -322,6 +323,12 @@ public class HostGame extends Activity {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
+            ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
+            ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
+            if(isFirstQuestion) {
+                local_player_progress.setMax(numberOfQuestions);
+                opponent_progress.setMax(numberOfQuestions);
+            }
             TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
             question_text_view.setText(questionText);
             TextView option1TextView = (TextView) findViewById(R.id.option1_button_text_view);
@@ -337,6 +344,14 @@ public class HostGame extends Activity {
                 TextView chosen_answer_text_view = (TextView) findViewById(R.id.chosen_answer_text_view);
                 String str = "Your previous answer was " + isHostCorrect;
                 chosen_answer_text_view.setText(str);
+
+                if(isHostCorrect) {
+                    local_player_progress.incrementProgressBy(1);
+                }
+
+                if(isClientCorrect) {
+                    opponent_progress.incrementProgressBy(1);
+                }
             }
         }
 
@@ -365,9 +380,9 @@ public class HostGame extends Activity {
     }
 
     private String packageForClient(String str) {
-        String bool = String.valueOf(isClientCorrect);
         str = str.substring(0, str.length()-1);
-        str = str + ", " + bool + "]";
+        str = str + ", " + hostScore + ", " + clientScore +"]";
+        //return [q, o1, o2, o3, o4, hostScore, clientScore]
         return str;
     }
 
