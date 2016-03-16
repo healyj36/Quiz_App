@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -40,6 +41,8 @@ public class OnlineStart extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.online_game);
         initCustomTypeFace(R.id.online_game_mode_title);
+        EditText myTextBox = (EditText) findViewById(R.id.laptop_ip_edit_text);
+        myTextBox.setText(R.string.server_ip_auto_fill);
 /*
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);

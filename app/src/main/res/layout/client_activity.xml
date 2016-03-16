@@ -12,12 +12,12 @@
         android:id="@+id/client_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/chat_client_message_hint" />
+        android:hint="@string/chat_server_message_hint" />
     <EditText
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/chat_client_address_hint"
+        android:hint="@string/online_host_address_hint"
         android:inputType="text"/>
     <Button
         android:id="@+id/send"

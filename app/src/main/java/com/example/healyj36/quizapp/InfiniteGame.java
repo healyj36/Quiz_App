@@ -51,6 +51,8 @@ public class InfiniteGame extends Activity {
             numberOfQuestionsString = extras.getString("numberOfQuestionsKey");
             subject = extras.getString("subjectKey");
             if(numberOfQuestionsString.equals("All Questions")) {
+                // TODO change this method to only take in one parameter. two seems unnecessary
+                // TODO also return int
                 numberOfQuestionsString = String.valueOf(DB_FUNC.getTotalNumberOfQuestions("questions", subject));
             }
         }

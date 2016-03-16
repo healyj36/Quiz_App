@@ -27,7 +27,7 @@ public class ServerClientDialogFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setTitle(title)
                 .setMessage(R.string.server_client_dialog_message)
-                .setPositiveButton(R.string.server_client_dialog_positive_action,
+                .setPositiveButton(R.string.client_button_text_view,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 // what to do when Server is chosen
@@ -44,7 +44,7 @@ public class ServerClientDialogFragment extends DialogFragment {
                             }
                         }
                 )
-                .setNegativeButton(R.string.server_client_dialog_negative_action,
+                .setNegativeButton(R.string.server_button_text_view,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 // what to do when client is chosen

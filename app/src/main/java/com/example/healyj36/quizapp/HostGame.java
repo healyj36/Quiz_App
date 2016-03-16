@@ -29,6 +29,7 @@ import java.util.HashMap;
  * Created by Jordan on 11/03/2016.
  */
 public class HostGame extends Activity {
+    // TODO add "are you sure you want to quit?"
     private final DBFunc DB_FUNC = new DBFunc(this);
 
     private TextView msg;

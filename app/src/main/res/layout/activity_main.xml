@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/online_1v1"
-            android:text="@string/online_game_mode_text_view"
+            android:text="@string/online_game_mode_title"
             android:onClick="goTo1v1"
             android:contentDescription="@string/online_game_mode_asc_description"/>
 

@@ -20,6 +20,7 @@ import java.util.HashMap;
  */
 public class DBFunc extends SQLiteOpenHelper {
 
+    // TODO change getWritable to getReadbale. (also, learn difference)
     private final static String DB_PATH = "/data/data/com.example.healyj36.quizapp/databases/";
 
     private final static String DB_NAME = "questions.db";
@@ -328,6 +329,8 @@ public class DBFunc extends SQLiteOpenHelper {
         return correctAnswer;
     }
 
+    // TODO change this method to only take in one parameter. two seems unnecessary
+    // TODO also return int
     public int getTotalNumberOfQuestions(String table, String category) {
         String selectQuery = "SELECT COUNT(*) FROM " + table + " WHERE category LIKE '" + category + "'";
         if(category.equals("All Subjects")) {
