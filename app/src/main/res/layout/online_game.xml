@@ -95,13 +95,13 @@
         android:gravity="center"
         android:layout_weight="1">
 
-        <EditText
-            android:id="@+id/laptop_ip_edit_text"
-            android:layout_width="fill_parent"
+        <Button
+            android:id="@+id/connect_to_server"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:hint="@string/server_ip_address_hint"/>
+            android:onClick="connect_to_server"/>
 
     </LinearLayout>
 

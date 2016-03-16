@@ -17,6 +17,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.util.ArrayList;
 /*
 public class OnlineStart extends Activity implements
@@ -72,7 +74,7 @@ public class OnlineStart extends Activity {
                         int maxNumber = DB_FUNC.getNumberOfQuestionsBySubject(subjectName);
                         ArrayList<String> numbers = new ArrayList<>();
                         numbers.add("All Questions"); // first element = "All Questions"
-                        for(int i=(maxNumber-1); i>0; i--){
+                        for (int i = (maxNumber - 1); i > 0; i--) {
                             String elem = String.valueOf(i); // convert number to string
                             numbers.add(elem); // add it to ArrayList
                         }
@@ -80,10 +82,42 @@ public class OnlineStart extends Activity {
                         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(OnlineStart.this, android.R.layout.simple_spinner_dropdown_item, numbers);
                         dropdown_number.setAdapter(adapter2);
                     }
+
                     public void onNothingSelected(AdapterView<?> parent) {
                         // do nothing
                     }
                 });
+    }
+
+    public void connect_to_server(View view) {
+        //Laptop IP is 136.206.254.6
+        Socket socket;
+        socket = null;
+        DataInputStream dataInputStream;
+        dataInputStream = null;
+        DataOutputStream dataOutputStream;
+        dataOutputStream = null;
+        socket = new Socket(136.206 .254 .6, 8080);
+        dataInputStream = new DataInputStream(socket.getInputStream());
+        dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        String hostIPaddress = "";
+        while (true) {
+            String str = dataInputStream.readUTF();
+            if (str.equals("host")) {
+                //launch host game
+                Intent hostStartAutoMatchMake = new Intent(OnlineStart.this, HostGameAfterAutoMatchmaking.class);
+                startActivity(hostStartAutoMatchMake);
+            } else if (str.equals("client")) {
+                hostIPaddress = dataInputStream.readUTF();
+                //launch client game
+                Intent clientStartAutoMatchMake = new Intent(OnlineStart.this, ClientGameAfterAutoMatchmaking.class);
+                clientStartAutoMatchMake.putExtra("hostIPAddr", hostIPaddress);
+                startActivityForResult(clientStartAutoMatchMake, result);
+            }
+            final int result = 2; // signal
+            dataOutputStream.writeUTF("finished");
+            dataOutputStream.flush();
+        }
     }
 
     private void initCustomTypeFace(int textView) {
@@ -153,6 +187,11 @@ public class OnlineStart extends Activity {
                 str += "Your opponent correctly answered " + theirScore + " questions.\n";
                 TextView a = (TextView) findViewById(R.id.online_game_mode_score);
                 a.setText(str);
+            }
+        }
+        if(resultCode==2) {
+            if (resultCode == Activity.RESULT_OK) {
+                DataOutputStream
             }
         }
     }
