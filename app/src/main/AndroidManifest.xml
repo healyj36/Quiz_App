@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
 
-        <activity android:name=".MainActivity" >
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -43,7 +44,8 @@
         <activity
             android:name=".OnlineStart"
             android:label="1v1 Game Mode"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ServerActivity"
@@ -68,12 +70,14 @@
         <activity
             android:name=".HostGame"
             android:label="Host Game - 1v1 Game Mode"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".JoinGame"
             android:label="Join Game - 1v1 Game Mode"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait">
         </activity>
 
         <meta-data android:name="com.google.android.gms.games.APP_ID"

@@ -80,10 +80,7 @@
             android:id="@+id/infinite_game_mode_start_text_view"
             android:text="@string/start_text_view"
             android:onClick="startInfiniteGame"
-            android:contentDescription="@string/infinite_game_mode_start_asc_description"
-
-            android:background="@drawable/buttonshape"
-            android:textColor="#FFFFFF"/>
+            android:contentDescription="@string/infinite_game_mode_start_asc_description" />
     </LinearLayout>
 
 </LinearLayout>

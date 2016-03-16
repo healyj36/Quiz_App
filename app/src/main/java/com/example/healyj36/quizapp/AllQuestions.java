@@ -33,10 +33,8 @@ public class AllQuestions extends ListActivity {
             e.printStackTrace();
         }
 
-        ArrayList<HashMap<String, String>> listQuestions = DB_FUNC.getAllQuestions();
-
         ArrayList<String> allQuestionNames = DB_FUNC.getAllQuestionNames();
-        if(listQuestions.size() != 0) {
+        if(allQuestionNames.size() != 0) {
             lvQuestions = getListView();
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(

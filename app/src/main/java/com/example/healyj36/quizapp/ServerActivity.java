@@ -2,6 +2,7 @@ package com.example.healyj36.quizapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -37,7 +38,7 @@ public class ServerActivity extends Activity {
 
         infoIp = (TextView) findViewById(R.id.infoIp);
         msg = (TextView) findViewById(R.id.msg);
-        serverMsg = (EditText)findViewById(R.id.title);
+        serverMsg = (EditText) findViewById(R.id.title);
 
         infoIp.setText(getIpAddress());
 
@@ -94,9 +95,12 @@ public class ServerActivity extends Activity {
             dataOutputStream = null;
 
             try {
+                Log.d(ServerActivity.class.getSimpleName(), "THE PORT NUMBER IS " + SocketServerPORT);
                 serverSocket = new ServerSocket(SocketServerPORT);
                 while (true) {
+                    Log.d(ServerActivity.class.getSimpleName(), "BEFORE SOCKET ACCEPT");
                     socket = serverSocket.accept();
+                    Log.d(ServerActivity.class.getSimpleName(), "AFTER SOCKET ACCEPT");
                     dataInputStream = new DataInputStream(socket.getInputStream());
                     dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
@@ -133,14 +137,13 @@ public class ServerActivity extends Activity {
                 });
 
             } finally {
-                if (socket != null) {
+                if (dataOutputStream != null) {
                     try {
-                        socket.close();
+                        dataOutputStream.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-
                 if (dataInputStream != null) {
                     try {
                         dataInputStream.close();
@@ -148,10 +151,10 @@ public class ServerActivity extends Activity {
                         e.printStackTrace();
                     }
                 }
-
-                if (dataOutputStream != null) {
+                if (socket != null) {
                     try {
-                        dataOutputStream.close();
+                        socket.close();
+                        Log.d(ServerActivity.class.getSimpleName(), "SOCKET CLOSED FROM EXCEPTION");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

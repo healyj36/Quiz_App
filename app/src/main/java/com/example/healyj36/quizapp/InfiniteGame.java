@@ -84,7 +84,7 @@ public class InfiniteGame extends Activity {
     public void onBackPressed() {
         // pause timer
         countDownTimer.cancel();
-
+        // TODO maybe just make th text view a blank string ("")
         // block question when dialog is open
         // 0xff444444 is the colour of the questions textview (#444444)
         getWindow().setBackgroundDrawable(new ColorDrawable(0xff444444));
@@ -104,6 +104,7 @@ public class InfiniteGame extends Activity {
 
         if(!isAnswer) { // if user chose wrong answer
             // return number of correct answers
+            // TODO make this a method
             String correctAnswersString = String.valueOf(correctAnswers);
             correctAnswersString = "Your score is " + correctAnswersString + "/" + numberOfQuestions;
             returnIntent.putExtra("correctAnswersKey",correctAnswersString);
@@ -123,6 +124,7 @@ public class InfiniteGame extends Activity {
             }
             else { // if user chose right answer, but no more questions left
                 // return number of correct answers
+                // TODO and call it here
                 String correctAnswersString = String.valueOf(correctAnswers);
                 correctAnswersString = "Congratulations, you answered all the questions!\nYour score is "
                         + correctAnswersString + "/" + numberOfQuestions;

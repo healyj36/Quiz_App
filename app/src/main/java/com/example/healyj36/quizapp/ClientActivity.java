@@ -103,13 +103,6 @@ public class ClientActivity extends Activity {
                 e.printStackTrace();
                 response = "IOException: " + e.toString();
             } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
                 if (dataOutputStream != null) {
                     try {
                         dataOutputStream.close();
@@ -120,6 +113,13 @@ public class ClientActivity extends Activity {
                 if (dataInputStream != null) {
                     try {
                         dataInputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (socket != null) {
+                    try {
+                        socket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

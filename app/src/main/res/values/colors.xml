@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#d90000</color>
     <color name="colorAccent">#303F9F</color>
     <color name="titleBarColor">#FFFFFF</color>
+
+    <color name="isPressedPrimary">#C60000</color>
+    <color name="isPressedPrimaryDark">#9B0000</color>
 </resources>
