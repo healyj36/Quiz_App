@@ -7,7 +7,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -25,10 +24,8 @@ import java.net.UnknownHostException;
  * Created by Jordan on 11/03/2016.
  */
 public class JoinGame extends Activity {
-    // TODO add "are you sure you want to quit?"
     private Socket socket;
     private int numQuestions;
-    //ProgressDialog loadingDialog;
 
     private String clientChoice;
 
@@ -44,12 +41,10 @@ public class JoinGame extends Activity {
         setContentView(R.layout.join_game_activity);
 
         editTextAddress = (EditText) findViewById(R.id.address);
-        Button buttonSend = (Button) findViewById(R.id.connect);
     }
 
     // "connect" button pressed to start game
     public void sendMessage(View view) {
-        String tMsg = "";
         setContentView(R.layout.question_entry);
 
         ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
@@ -71,28 +66,18 @@ public class JoinGame extends Activity {
         MyClientTask myClientTask = new MyClientTask(editTextAddress.getText().toString());
         myClientTask.execute();
 
-        // TODO maybe take out loading dialog (only displayed for a split second)
-        // lading dialog. waiting for question to be displayed
-            // loadingDialog = new ProgressDialog(JoinGame.this);
-            // loadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            // loadingDialog.setMessage("Loading. Please wait...");
-            // loadingDialog.setIndeterminate(true);
-            // loadingDialog.setCanceledOnTouchOutside(false);
-            // loadingDialog.show();
-
     }
 
     public class MyClientTask extends AsyncTask<Void, String, Void> {
 
         final String dstAddress;
-        final int dstPort;
+        final int dstPort = 8080;
         String questionWithOptions = "";
         String scores = "";
 
 
         MyClientTask(String addr) {
             dstAddress = addr;
-            dstPort = 8080;
         }
 
         @Override
@@ -107,24 +92,29 @@ public class JoinGame extends Activity {
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataInputStream = new DataInputStream(socket.getInputStream());
 
+                //The first thing sent by the host is the number of questions
                 numQuestions = dataInputStream.readInt();
 
                 for(int i = 0; i < numQuestions; i++) {
+                    //read the question data
                     questionWithOptions = dataInputStream.readUTF();
+                    //display it
                     publishProgress(questionWithOptions);
                     // get clientChoice from button press
                     // writeUTF(answer)
                     // flush
-                    // TODO think of a better method than busy waiting
+
+                    // Would prefer a better method than busy waiting
                     while (clientChoice == null) {
                     }
                     isFirstQuestion = false;
+                    //writeout the answer
                     dataOutputStream.writeUTF(clientChoice);
                     dataOutputStream.flush();
 
                     clientChoice = null;
                 }
-
+                //after the loop, read the scores
                 scores = dataInputStream.readUTF();//hostscore, clientscore
 
 
@@ -137,13 +127,6 @@ public class JoinGame extends Activity {
                 e.printStackTrace();
                 questionWithOptions = "IOException: " + e.toString();
             } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
                 if (dataOutputStream != null) {
                     try {
                         dataOutputStream.close();
@@ -158,6 +141,13 @@ public class JoinGame extends Activity {
                         e.printStackTrace();
                     }
                 }
+                if (socket != null) {
+                    try {
+                        socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return null;
         }
@@ -166,6 +156,7 @@ public class JoinGame extends Activity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             Intent returnIntent = new Intent();
+            //Return back to OnlineStart, send out some data to display the scores
             returnIntent.putExtra("scoreKey", scores);
             returnIntent.putExtra("numQuestionsKey", numQuestions);
             returnIntent.putExtra("wasHostKey", false);
@@ -179,6 +170,7 @@ public class JoinGame extends Activity {
             ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
             ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
             if(isFirstQuestion) {
+                //set the number of sections in the progress bars on the first question
                 local_player_progress.setMax(numQuestions);
                 opponent_progress.setMax(numQuestions);
             }
@@ -209,7 +201,7 @@ public class JoinGame extends Activity {
                 //loadingDialog.dismiss();
 
             //return [q, o1, o2, o3, o4, hostScore, clientScore]
-            if(!isFirstQuestion) {//you need to say if -the last response was correct or no
+            if(!isFirstQuestion) {
                 TextView chosen_answer_text_view = (TextView) findViewById(R.id.chosen_answer_text_view);
 
                 local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
@@ -217,6 +209,8 @@ public class JoinGame extends Activity {
 
                 String str = "Your previous answer was ";
 
+                //After the first question, display if the previous answer was correct or not
+                //Then increment the progress bars if needed
                 if(clientScore != Integer.parseInt(ary[6])) {//if client score has gone up
                     clientScore = Integer.parseInt(ary[6]);
                     str += "true";
@@ -236,7 +230,6 @@ public class JoinGame extends Activity {
     }
 
     public void getResponse(View view) {
-        // TODO = null, fix busy waiting
         clientChoice = null;
         clientChoice = ((Button) view).getText().toString();
     }

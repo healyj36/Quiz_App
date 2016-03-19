@@ -20,21 +20,24 @@
         android:hint="@string/online_host_address_hint"
         android:inputType="text"/>
     <Button
+        android:id="@+id/connect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/online_join_button_view"
+        android:onClick="connectToServer"/>
+    <Button
         android:id="@+id/send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/chat_client_send_button"
         android:onClick="sendMessage"/>
-    <!--
-    <Button
-        android:id="@+id/clear"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Clear"/>
-        -->
-    <TextView
-        android:id="@+id/response"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent" >
+        <TextView
+            android:id="@+id/response"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
 
 </LinearLayout>

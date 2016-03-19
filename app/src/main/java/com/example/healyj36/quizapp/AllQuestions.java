@@ -2,23 +2,19 @@ package com.example.healyj36.quizapp;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Jordan on 23/02/2016.
  */
 public class AllQuestions extends ListActivity {
-    private ListView lvQuestions;
 
     private final DBFunc DB_FUNC = new DBFunc(this);
 
@@ -34,8 +30,9 @@ public class AllQuestions extends ListActivity {
         }
 
         ArrayList<String> allQuestionNames = DB_FUNC.getAllQuestionNames();
+        // Populate ListView with all questions in db
         if(allQuestionNames.size() != 0) {
-            lvQuestions = getListView();
+            ListView lvQuestions = getListView();
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     this,
@@ -45,30 +42,22 @@ public class AllQuestions extends ListActivity {
 
             lvQuestions.setAdapter(adapter);
 
+            // When item is clicked, go to that question
             lvQuestions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent viewQues = new Intent(AllQuestions.this, ViewQuestion.class);
 
                     // final int result = 1; // signal
-
                     String questionName = (String) parent.getItemAtPosition(position);
 
                     viewQues.putExtra("questionKey", questionName);
 
                     // call activity to run and don't expect data to be sent back
                     startActivity(viewQues);
-
-                    // call activity to run and retrieve data back
-                    // startActivityForResult(viewQues, result);
                 }
             });
         }
     }
 
-    private void initCustomTypeFace(int textView) {
-        TextView txt = (TextView) findViewById(textView);
-        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/agency-fb.ttf");
-        txt.setTypeface(font);
-    }
 }

@@ -2,9 +2,11 @@ package com.example.healyj36.quizapp;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,6 +24,7 @@ import java.util.Enumeration;
 public class ServerActivity extends Activity {
 
     EditText serverMsg;
+    Button sendButton;
 
     TextView infoIp, msg;
     String message = "";
@@ -39,11 +42,14 @@ public class ServerActivity extends Activity {
         infoIp = (TextView) findViewById(R.id.infoIp);
         msg = (TextView) findViewById(R.id.msg);
         serverMsg = (EditText) findViewById(R.id.title);
+        sendButton = (Button) findViewById(R.id.send);
 
         infoIp.setText(getIpAddress());
 
         Thread socketServerThread = new Thread(new SocketServerThread());
         socketServerThread.start();
+        sendButton.setEnabled(false);
+        sendButton.setText("Waiting for connection...");
 
     }
 
@@ -53,20 +59,6 @@ public class ServerActivity extends Activity {
 
         // in case finally block isn't reached (doesn't run)
         // close sockets here
-        if (serverSocket != null) {
-            try {
-                serverSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (socket != null) {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         if (dataInputStream != null) {
             try {
                 dataInputStream.close();
@@ -81,12 +73,46 @@ public class ServerActivity extends Activity {
                 e.printStackTrace();
             }
         }
+        if (serverSocket != null) {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void sendMessage(View view) {
+
+        String msgReply = serverMsg.getText().toString();
+        if(msgReply.equals("")){
+            msgReply = null;
+            Toast.makeText(ServerActivity.this, "No message sent", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            try {
+                dataOutputStream.writeUTF(msgReply);
+                dataOutputStream.flush();
+                message += "You: " + msgReply + "\n";
+                msg.setText(message);
+                serverMsg.setText("");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private class SocketServerThread extends Thread {
 
         static final int SocketServerPORT = 8080;
-        int count = 0;
 
         @Override
         public void run() {
@@ -95,24 +121,24 @@ public class ServerActivity extends Activity {
             dataOutputStream = null;
 
             try {
-                Log.d(ServerActivity.class.getSimpleName(), "THE PORT NUMBER IS " + SocketServerPORT);
                 serverSocket = new ServerSocket(SocketServerPORT);
+                socket = serverSocket.accept();
+                ServerActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendButton.setEnabled(true);
+                        sendButton.setText(R.string.chat_client_send_button);
+                    }
+                });
+                dataInputStream = new DataInputStream(socket.getInputStream());
+                dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 while (true) {
-                    Log.d(ServerActivity.class.getSimpleName(), "BEFORE SOCKET ACCEPT");
-                    socket = serverSocket.accept();
-                    Log.d(ServerActivity.class.getSimpleName(), "AFTER SOCKET ACCEPT");
-                    dataInputStream = new DataInputStream(socket.getInputStream());
-                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
-
                     String messageFromClient = "";
 
                     //If no message sent from client, this code will block the program
                     messageFromClient = dataInputStream.readUTF();
 
-                    count++;
-                    message += "#" + count + " from " + socket.getInetAddress()
-                            + ":" + socket.getPort() + "\n"
-                            + "Msg from client: " + messageFromClient + "\n";
+                    message += socket.getInetAddress().toString().replace("\\", "") + ": " + messageFromClient + "\n";
 
                     ServerActivity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -121,29 +147,19 @@ public class ServerActivity extends Activity {
                         }
                     });
 
-                    String msgReply = count + ": " + serverMsg.getText().toString();
-                    dataOutputStream.writeUTF(msgReply);
-                    dataOutputStream.flush();
-
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                final String errMsg = e.toString();
-                ServerActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        msg.setText(errMsg);
-                    }
-                });
-
+                finish();
             } finally {
-                if (dataOutputStream != null) {
+                if (socket != null) {
                     try {
-                        dataOutputStream.close();
+                        socket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+
                 if (dataInputStream != null) {
                     try {
                         dataInputStream.close();
@@ -151,10 +167,10 @@ public class ServerActivity extends Activity {
                         e.printStackTrace();
                     }
                 }
-                if (socket != null) {
+
+                if (dataOutputStream != null) {
                     try {
-                        socket.close();
-                        Log.d(ServerActivity.class.getSimpleName(), "SOCKET CLOSED FROM EXCEPTION");
+                        dataOutputStream.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

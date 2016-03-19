@@ -9,7 +9,7 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:gravity="center">
-<!-- TODO give the vertical progress bars a minimum width -->
+
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="fill_parent"

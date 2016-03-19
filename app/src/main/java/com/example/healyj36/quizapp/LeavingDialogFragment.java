@@ -11,10 +11,10 @@ import android.os.Bundle;
  */
 public class LeavingDialogFragment extends DialogFragment {
 
-    public static LeavingDialogFragment newInstance(int title) {
+    public static LeavingDialogFragment newInstance() {
         LeavingDialogFragment frag = new LeavingDialogFragment();
         Bundle args = new Bundle();
-        args.putInt("title", title);
+        args.putInt("title", R.string.leaving_game_dialog_title);
         frag.setArguments(args);
         return frag;
     }

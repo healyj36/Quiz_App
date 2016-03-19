@@ -53,14 +53,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/server_button_text_view"
-            android:onClick="goToServer" />
+            android:onClick="goToServer"
+            android:contentDescription="@string/server_button_asc_description"/>
 
         <Button
             android:id="@+id/client_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/client_button_text_view"
-            android:onClick="goToClient" />
+            android:onClick="goToClient"
+            android:contentDescription="@string/client_button_asc_description"/>
 
     </LinearLayout>
 

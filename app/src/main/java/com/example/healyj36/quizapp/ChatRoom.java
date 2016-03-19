@@ -15,12 +15,12 @@ public class ChatRoom extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
-        initCustomTypeFace(R.id.chat_room_title);
+        initCustomTypeFace();
 
     }
 
-    private void initCustomTypeFace(int textView) {
-        TextView txt = (TextView) findViewById(textView);
+    private void initCustomTypeFace() {
+        TextView txt = (TextView) findViewById(R.id.chat_room_title);
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/agency-fb.ttf");
         txt.setTypeface(font);
     }

@@ -23,7 +23,7 @@ public class InfiniteModeStart extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.infinite_start);
-        initCustomTypeFace(R.id.infinite_game_mode_intro_title);
+        initCustomTypeFace();
 
         try {
             DB_FUNC.createDatabase();
@@ -40,30 +40,24 @@ public class InfiniteModeStart extends Activity {
 
         final Spinner dropdown_number = (Spinner) findViewById(R.id.number_of_questions);
 
-        dropdown_subject.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        String subjectName = parent.getItemAtPosition(position).toString();
-                        int maxNumber = DB_FUNC.getNumberOfQuestionsBySubject(subjectName);
-                        ArrayList<String> numbers = new ArrayList<>();
-                        numbers.add("All Questions"); // first element = "All Questions"
-                        for(int i=(maxNumber-1); i>0; i--){
-                            String elem = String.valueOf(i); // convert number to string
-                            numbers.add(elem); // add it to ArrayList
-                        }
+        dropdown_subject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String subjectName = parent.getItemAtPosition(position).toString();
+                int maxNumber = DB_FUNC.getNumberOfQuestionsBySubject(subjectName);
+                ArrayList<String> numbers = new ArrayList<>();
+                numbers.add("All Questions"); // first element = "All Questions"
+                for(int i=(maxNumber-1); i>0; i--){
+                    String elem = String.valueOf(i); // convert number to string
+                    numbers.add(elem); // add it to ArrayList
+                }
 
-                        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(InfiniteModeStart.this, android.R.layout.simple_spinner_dropdown_item, numbers);
-                        dropdown_number.setAdapter(adapter2);
-                    }
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        // do nothing
-                    }
-                });
-
-        // on item selected {
-        //String subjectName = dropdown_subject.getSelectedItem().toString();
-
-        // }
+                ArrayAdapter<String> adapter2 = new ArrayAdapter<>(InfiniteModeStart.this, android.R.layout.simple_spinner_dropdown_item, numbers);
+                dropdown_number.setAdapter(adapter2);
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+                // do nothing
+            }
+        });
     }
 
     public void startInfiniteGame(View view) {
@@ -75,9 +69,6 @@ public class InfiniteModeStart extends Activity {
         final int requestCode = 1; // signal
         startGame.putExtra("subjectKey", spinner1.getSelectedItem().toString());
         startGame.putExtra("numberOfQuestionsKey", spinner2.getSelectedItem().toString());
-
-        // call activity to run and don't expect data to be sent back
-        //startActivity(startGame);
 
         // call activity to run and retrieve data back
         startActivityForResult(startGame, requestCode);
@@ -97,7 +88,6 @@ public class InfiniteModeStart extends Activity {
                 TextView b = (TextView) findViewById(R.id.infinite_game_mode_out_of_time);
                 a.setText(correctAnswers);
                 b.setText("");
-                // TODO create scoreboard table & add in results (with username)
             }
             // resultCode == Activity.RESULT_OK+2, game finished cleanly, ran out of time
             if(resultCode == Activity.RESULT_OK+2) {
@@ -123,8 +113,8 @@ public class InfiniteModeStart extends Activity {
         }
     }
 
-    private void initCustomTypeFace(int textView) {
-        TextView txt = (TextView) findViewById(textView);
+    private void initCustomTypeFace() {
+        TextView txt = (TextView) findViewById(R.id.infinite_game_mode_intro_title);
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/agency-fb.ttf");
         txt.setTypeface(font);
     }

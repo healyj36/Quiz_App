@@ -58,11 +58,6 @@
             android:theme="@style/AppTheme">
         </activity>
         <activity
-            android:name=".Settings"
-            android:label="Settings"
-            android:theme="@style/AppTheme">
-        </activity>
-        <activity
             android:name=".ChatRoom"
             android:label="Chat Room"
             android:theme="@style/AppTheme">

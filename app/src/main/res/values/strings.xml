@@ -13,7 +13,7 @@
     <string name="online_game_mode_title">1v1 Game Mode</string>
 
     <string name="infinite_game_mode_text_view">Infinite Game Mode</string>
-    <string name="infinite_game_mode_description">In this game mode, you will have to try your best to answer as many questions correctly in a row as possible. The game will exit when either, you answer a question incorrectly or you\'ve answered all the questions correctly</string>
+    <string name="infinite_game_mode_description">In this game mode, you will have to try your best to answer as many questions correctly in a row as possible. The game will exit when you either, answer a question incorrectly or, you have answered all of the questions correctly.</string>
     <string name="select_number_of_questions_message">Please select the subject and number of questions below</string>
     <string name="start_text_view">Start</string>
 
@@ -30,7 +30,7 @@
     <string name="online_game_mode_asc_description">Play 1v1 Game Mode.</string>
     <string name="infinite_game_mode_button_asc_description">Play Infinite Game Mode.</string>
     <string name="all_questions_button_asc_description">View all possible questions.</string>
-    <string name="settings_button_asc_description">Go to Settings.</string>
+    <string name="chat_room_button_asc_description">Go to Chat Room.</string>
     <string name="infinite_game_mode_title_asc_description">Infinite Game Mode. Title</string>
     <string name="subject_spinner_asc_description">Select subject from list.</string>
     <string name="number_of_questions_asc_description">Select number of questions from list.</string>
@@ -61,5 +61,10 @@
 
     <string name="server_ip_auto_fill">136.206.254.6</string>
     <string name="server_ip_address_hint">Server IP Address</string>
+    <string name="server_button_asc_description">Act as server</string>
+    <string name="client_button_asc_description">Act as client</string>
+    <string name="send_message_asc_description">Send Message.</string>
+    <string name="host_button_asc_description">Host Game.</string>
+    <string name="join_game_asc_description">Join Game.</string>
 
 </resources>

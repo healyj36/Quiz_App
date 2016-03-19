@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/infinite_game_mode_description"
             android:text="@string/infinite_game_mode_description"/>
-        <!-- TODO finish description -->
 
         <TextView
             android:layout_width="wrap_content"
@@ -42,7 +41,6 @@
             android:padding="@dimen/padding_5dp"
             android:id="@+id/please_select_text_view"
             android:text="@string/select_number_of_questions_message"/>
-        <!-- TODO change "select number" message -->
     </LinearLayout>
 
 

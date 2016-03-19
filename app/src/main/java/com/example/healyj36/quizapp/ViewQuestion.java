@@ -22,6 +22,7 @@ public class ViewQuestion extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_entry);
+        // hide progress bars, not used in this activity
         ProgressBar lpp = (ProgressBar) findViewById(R.id.local_player_progress);
         ProgressBar op = (ProgressBar) findViewById(R.id.opponent_progress);
         ProgressBar cdt = (ProgressBar) findViewById(R.id.countdown_timer);
@@ -32,6 +33,7 @@ public class ViewQuestion extends Activity {
 
         Intent calledFromMain = getIntent();
 
+        // get question chosen from ViewQuestions ListView
         String questionChosen = calledFromMain.getExtras().getString("questionKey");
 
         TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
@@ -39,6 +41,7 @@ public class ViewQuestion extends Activity {
 
         ArrayList<String> options = DB_FUNC.findOptionsByQuestion(questionChosen);
 
+        // display questions and options
         TextView option1 = (TextView) findViewById(R.id.option1_button_text_view);
         option1.setText(options.get(0));
         TextView option2 = (TextView) findViewById(R.id.option2_button_text_view);
@@ -51,6 +54,7 @@ public class ViewQuestion extends Activity {
     }
 
     public void getResponse(View view) {
+        // was the users choice correct
         String chosenAnswer = ((Button) view).getText().toString();
 
         TextView t = (TextView) findViewById(R.id.question_text_view);
@@ -59,11 +63,5 @@ public class ViewQuestion extends Activity {
         boolean isAnswer = DB_FUNC.isAnswer(ques, chosenAnswer);
         TextView a = (TextView) findViewById(R.id.chosen_answer_text_view);
         a.setText(String.valueOf(isAnswer));
-
-
-        // this.finish(); //to close activity when button is pressed (goes back to main activity)
-        /*
-        TODO function to add to record of previous correct or incorrect answers
-         */
     }
 }

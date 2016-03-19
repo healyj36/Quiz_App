@@ -25,7 +25,10 @@ public class ClientActivity extends Activity {
     TextView textResponse;
     EditText editTextAddress;
     Button buttonSend;
-    //Button buttonClear;
+    Button connectButton;
+    DataOutputStream dataOutputStream;
+    DataInputStream dataInputStream;
+    String messages = "";
 
     EditText clientMsg;
 
@@ -36,39 +39,52 @@ public class ClientActivity extends Activity {
 
         editTextAddress = (EditText) findViewById(R.id.address);
         buttonSend = (Button) findViewById(R.id.send);
-        // buttonClear = (Button) findViewById(R.id.clear);
         textResponse = (TextView) findViewById(R.id.response);
+        connectButton = (Button) findViewById(R.id.connect);
 
-        clientMsg = (EditText)findViewById(R.id.client_msg);
-
-        /*
-        buttonClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                textResponse.setText("");
-            }
-        });
-        */
+        clientMsg = (EditText) findViewById(R.id.client_msg);
+        buttonSend.setVisibility(View.GONE);
+        clientMsg.setVisibility(View.GONE);
     }
 
     public void sendMessage(View view) {
         String tMsg = clientMsg.getText().toString();
         if(tMsg.equals("")){
             tMsg = null;
-            Toast.makeText(ClientActivity.this, "No Welcome Msg sent", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ClientActivity.this, "No message sent", Toast.LENGTH_SHORT).show();
         }
 
+        try {
+            if(tMsg != null) {
+                dataOutputStream.writeUTF(tMsg);
+                dataOutputStream.flush();
+                messages += "You: " + tMsg + "\n";
+                textResponse.setText(messages);
+            }
+            clientMsg.setText("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void connectToServer(View view) {
+        // must be pressed first
+        // disable other buttons
         MyClientTask myClientTask = new MyClientTask(editTextAddress
                 .getText().toString(), 8080,
-                tMsg);
+                null);
         myClientTask.execute();
+        //re-enable buttons after connection
+        buttonSend.setVisibility(View.VISIBLE);
+        clientMsg.setVisibility(View.VISIBLE);
+        editTextAddress.setVisibility(View.GONE);
+        connectButton.setVisibility(View.GONE);
     }
 
     public class MyClientTask extends AsyncTask<Void, Void, Void> {
 
         String dstAddress;
         int dstPort;
-        String response = "";
         String msgToServer;
 
         MyClientTask(String addr, int port, String msgTo) {
@@ -81,27 +97,37 @@ public class ClientActivity extends Activity {
         protected Void doInBackground(Void... arg0) {
 
             socket = null;
-            DataOutputStream dataOutputStream = null;
-            DataInputStream dataInputStream = null;
-
+            dataOutputStream = null;
+            dataInputStream = null;
             try {
                 socket = new Socket(dstAddress, dstPort);
+                ClientActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(ClientActivity.this, "Connected to " + dstAddress, Toast.LENGTH_SHORT).show();
+                    }
+                });
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataInputStream = new DataInputStream(socket.getInputStream());
+                String str;
+                while(true) {
+                    str = dataInputStream.readUTF();
+                    messages += dstAddress + ": " + str + "\n";
 
-                if(msgToServer != null){
-                    dataOutputStream.writeUTF(msgToServer);
-                    dataOutputStream.flush();
+                    ClientActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textResponse.setText(messages);
+                        }
+                    });
                 }
-
-                response = dataInputStream.readUTF();
 
             } catch (UnknownHostException e) {
                 e.printStackTrace();
-                response = "UnknownHostException: " + e.toString();
+                messages = "UnknownHostException: " + e.toString();
             } catch (IOException e) {
                 e.printStackTrace();
-                response = "IOException: " + e.toString();
+                finish();
             } finally {
                 if (dataOutputStream != null) {
                     try {
@@ -130,7 +156,7 @@ public class ClientActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void result) {
-            textResponse.setText(response);
+            textResponse.setText(messages);
             super.onPostExecute(result);
         }
 

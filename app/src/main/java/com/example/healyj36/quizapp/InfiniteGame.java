@@ -33,6 +33,7 @@ public class InfiniteGame extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_entry);
+        // hide the progress bars, not used in this game mode
         ProgressBar lpp = (ProgressBar) findViewById(R.id.local_player_progress);
         ProgressBar op = (ProgressBar) findViewById(R.id.opponent_progress);
         lpp.setVisibility(View.GONE);
@@ -45,21 +46,24 @@ public class InfiniteGame extends Activity {
         }
 
         Bundle extras = getIntent().getExtras();
+        // receive subject and number of questions from the previous activity
         String numberOfQuestionsString = "0";
         String subject = "0";
         if (extras != null) {
             numberOfQuestionsString = extras.getString("numberOfQuestionsKey");
             subject = extras.getString("subjectKey");
+            // if user chose all questions...
             if(numberOfQuestionsString.equals("All Questions")) {
-                // TODO change this method to only take in one parameter. two seems unnecessary
-                // TODO also return int
-                numberOfQuestionsString = String.valueOf(DB_FUNC.getTotalNumberOfQuestions("questions", subject));
+                // ...get the total number of questions in the database
+                numberOfQuestionsString = String.valueOf(DB_FUNC.getTotalNumberOfQuestions(subject));
             }
         }
 
         numberOfQuestions = Integer.parseInt(numberOfQuestionsString);
+        //pull n questions from the database
         allQuestions = DB_FUNC.getQuestionsRandom(numberOfQuestions, subject);
 
+        // show the first question
         showQuestion(i);
         i++;
 
@@ -73,9 +77,9 @@ public class InfiniteGame extends Activity {
             timer.getProgressDrawable().setColorFilter(Color.parseColor("#00cc00"), android.graphics.PorterDuff.Mode.SRC_IN);
         }
 
-        // 10000 ms = 10s
-        // 1000 ms = 1s
         // timer of 10 seconds counting in intervals of 1 second
+            // 10000 ms = 10s
+            // 1000 ms = 1s
         countDownTimer = new MyCountDownTimer(10000, 500);
         countDownTimer.start();
     }
@@ -84,9 +88,8 @@ public class InfiniteGame extends Activity {
     public void onBackPressed() {
         // pause timer
         countDownTimer.cancel();
-        // TODO maybe just make th text view a blank string ("")
         // block question when dialog is open
-        // 0xff444444 is the colour of the questions textview (#444444)
+        // 0xff444444 is the colour of the questions TextView (#444444)
         getWindow().setBackgroundDrawable(new ColorDrawable(0xff444444));
 
         showDialog();
@@ -104,7 +107,6 @@ public class InfiniteGame extends Activity {
 
         if(!isAnswer) { // if user chose wrong answer
             // return number of correct answers
-            // TODO make this a method
             String correctAnswersString = String.valueOf(correctAnswers);
             correctAnswersString = "Your score is " + correctAnswersString + "/" + numberOfQuestions;
             returnIntent.putExtra("correctAnswersKey",correctAnswersString);
@@ -124,7 +126,6 @@ public class InfiniteGame extends Activity {
             }
             else { // if user chose right answer, but no more questions left
                 // return number of correct answers
-                // TODO and call it here
                 String correctAnswersString = String.valueOf(correctAnswers);
                 correctAnswersString = "Congratulations, you answered all the questions!\nYour score is "
                         + correctAnswersString + "/" + numberOfQuestions;
@@ -137,6 +138,7 @@ public class InfiniteGame extends Activity {
     }
 
     private void showQuestion(int index) {
+        // change the views of this activity to display question and options
         HashMap<String,String> question = allQuestions.get(index);
 
         String questionName = question.get("question");
@@ -158,8 +160,8 @@ public class InfiniteGame extends Activity {
     }
 
     private void showDialog() {
-        DialogFragment newFragment = LeavingDialogFragment.newInstance(
-                R.string.leaving_game_dialog_title);
+        // create instance of the dialog box
+        DialogFragment newFragment = LeavingDialogFragment.newInstance();
         newFragment.show(getFragmentManager(), "dialog");
     }
 
@@ -178,7 +180,6 @@ public class InfiniteGame extends Activity {
 
     public void doNegativeClick() {
     // method for pressing "No" on dialog box
-        // TODO this is hardcoded. need method to find value
         // 0xfff3f3f3 is the colour of the default background (#f3f3f3)
         getWindow().setBackgroundDrawable(new ColorDrawable(0xfff3f3f3));
 

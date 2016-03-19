@@ -6,10 +6,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -29,10 +27,8 @@ import java.util.HashMap;
  * Created by Jordan on 11/03/2016.
  */
 public class HostGame extends Activity {
-    // TODO add "are you sure you want to quit?"
     private final DBFunc DB_FUNC = new DBFunc(this);
 
-    private TextView msg;
     private ServerSocket serverSocket = null;
     private Socket socket;
     private int numberOfQuestions;
@@ -58,33 +54,30 @@ public class HostGame extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_entry);
-        // hide views
-            // hide local player progress bar
-            // hide opponent progress bar
-            // hide timer progress bar
-            // hide button1 progress bar
-            // hide button2 progress bar
-            // hide button3 progress bar
-            // hide button4 progress bar
-        // set isConnected == false
 
         Bundle extras = getIntent().getExtras();
+        // receive subject and number of questions from the previous activity
         String numberOfQuestionsString = "0";
         String subject = "0";
         if (extras != null) {
             numberOfQuestionsString = extras.getString("numberOfQuestionsKey");
             subject = extras.getString("subjectKey");
+            // if user chose all questions...
             if (numberOfQuestionsString.equals("All Questions")) {
-                numberOfQuestionsString = String.valueOf(DB_FUNC.getTotalNumberOfQuestions("questions", subject));
+                // ...get the total number of questions in the database
+                numberOfQuestionsString = String.valueOf(DB_FUNC.getTotalNumberOfQuestions(subject));
             }
         }
         numberOfQuestions = Integer.parseInt(numberOfQuestionsString);
 
+        //pull n questions from the database
         allQuestions = DB_FUNC.getQuestionsRandom(numberOfQuestions, subject);
 
+        //run the AsyncTask
         MyHostTask myHostTask = new MyHostTask();
         myHostTask.execute();
 
+        //Set up progress bars
         ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
         ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -97,6 +90,7 @@ public class HostGame extends Activity {
             opponent_progress.getProgressDrawable().setColorFilter(Color.parseColor("#AA8D00"), android.graphics.PorterDuff.Mode.MULTIPLY);
         }
 
+        //display host IP on the screen to allow host to tell client where to connect
         TextView question_text_view = (TextView) findViewById(R.id.question_text_view);
         question_text_view.setText(getIpAddress());
     }
@@ -146,6 +140,7 @@ public class HostGame extends Activity {
         option3 = question.get("option3");
         option4 = question.get("option4");
 
+        // return the question and its options in the form of a string package
         return "[" + questionText +
                 ", " + option1 +
                 ", " + option2 +
@@ -174,17 +169,19 @@ public class HostGame extends Activity {
             dataInputStream = null;
             dataOutputStream = null;
             try {
-                // set isConnected == true
-                // call on progress update
-                // set isConnected == false
+                //Open socket listening on 8080, and accept a connection
                 serverSocket = new ServerSocket(SocketServerPORT);
                 socket = serverSocket.accept();
 
+                //Initialise Data Input/Output streams
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
+
                 int i = 0;
+                //get question
                 questionAndOptions = getQuestionAndAnswers(i);
+                //Get answer to question
                 correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
 
                 dataOutputStream.writeInt(numberOfQuestions);
@@ -196,50 +193,40 @@ public class HostGame extends Activity {
                 isHostCorrect = false;
                 isClientCorrect = false;
                 while (i < numberOfQuestions) {
+                    //Push question out to client, get response from them
                     Thread clThread = new Thread(new clientThread());
                     clThread.start();
-                    /*
 
-                    try {
-                        dataOutputStream.writeUTF(questionAndOptions);
-                        dataOutputStream.writeBoolean(isClientCorrect);
-                        dataOutputStream.flush();
-
-                        clientChoice = dataInputStream.readUTF();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        isClientCorrect = checkAnswer(clientChoice, correctAnswer);
-                    }
-                     */
-
-                    //ask host q and get response
+                    //In the meantime, ask host question
                     publishProgress(questionAndOptions);
 
                     // get choice from button press
-                    // TODO think of a better method than busy waiting
+                    // would prefer a better method than busy waiting
                     while (hostChoice == null) {
                     }
-
+                    //Check if host correct
                     isHostCorrect = checkAnswer(hostChoice, correctAnswer);
 
                     if (isHostCorrect) {
                         hostScore++;
                     }
-
+                    //reset host choice to null
                     hostChoice = null;
 
+                    //at this point, join the client thread.
+                    //the host waits here until the client thread has finished executing
                     clThread.join();
                     if (isClientCorrect) {
                         clientScore++;
                     }
                     isFirstQuestion = false;
+                    //get question and answer
                     questionAndOptions = getQuestionAndAnswers(i);
                     correctAnswer = DB_FUNC.getAnswer(getQuestion(i));
 
                     i++;
                 }
-
+                //Perform same as you would in the loop
                 Thread clThread = new Thread(new clientThread());
                 clThread.start();
 
@@ -257,12 +244,12 @@ public class HostGame extends Activity {
                     clientScore++;
                 }
 
+                //Except now, instead of fetching the next question (which would be impossible),
+                //display the scores of both players
                 finalScores = "[" + hostScore + ", " + clientScore +"]";
                 dataOutputStream.writeUTF(finalScores);
                 dataOutputStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             } finally {
                 if (dataInputStream != null) {
@@ -293,18 +280,11 @@ public class HostGame extends Activity {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-            // if isConnected == false
-                // show local player progress bar
-                // show opponent progress bar
-                // show timer progress bar
-                // show button1 progress bar
-                // show button2 progress bar
-                // show button3 progress bar
-                // show button4 progress bar
 
             ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
             ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
             if(isFirstQuestion) {
+                //set the number of sections in the progress bars on the first question
                 local_player_progress.setMax(numberOfQuestions);
                 opponent_progress.setMax(numberOfQuestions);
             }
@@ -320,14 +300,15 @@ public class HostGame extends Activity {
             option4TextView.setText(option4);
 
             if(!isFirstQuestion) {
+                //After the first question, display if the previous answer was correct or not
                 TextView chosen_answer_text_view = (TextView) findViewById(R.id.chosen_answer_text_view);
                 String str = "Your previous answer was " + isHostCorrect;
                 chosen_answer_text_view.setText(str);
 
+                //if one/both of the answers was correct, increment the progress bar
                 if(isHostCorrect) {
                     local_player_progress.incrementProgressBy(1);
                 }
-
                 if(isClientCorrect) {
                     opponent_progress.incrementProgressBy(1);
                 }
@@ -338,6 +319,7 @@ public class HostGame extends Activity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             Intent returnIntent = new Intent();
+            //Return back to OnlineStart, send out some data to display the scores
             returnIntent.putExtra("scoreKey", finalScores);
             returnIntent.putExtra("numQuestionsKey", numberOfQuestions);
             returnIntent.putExtra("wasHostKey", true);
@@ -352,6 +334,8 @@ public class HostGame extends Activity {
         return a.equals(b);
     }
 
+    //To let the client know their progress and the progress of the host,
+    //add 2 ints to the end, corresponding to the scores of the players
     private String packageForClient(String str) {
         str = str.substring(0, str.length()-1);
         str = str + ", " + hostScore + ", " + clientScore +"]";
@@ -362,46 +346,22 @@ public class HostGame extends Activity {
     private class clientThread implements Runnable {
         public void run() {
             try {
+                //output question data
                 dataOutputStream.writeUTF(packageForClient(questionAndOptions));
                 dataOutputStream.flush();
-
+                //wait for response
                 clientChoice = dataInputStream.readUTF();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            //check if its the right answer
             isClientCorrect = checkAnswer(clientChoice, correctAnswer);
         }
     }
 
     private String getIpAddress(){
-        // TODO for finding address at home
-        /*
-        String ip = "My IP address is: ";
-        String addr = "UNAVAILABLE";
-        try {
-            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
-            while (enumNetworkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
-                Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
-                while (enumInetAddress.hasMoreElements()) {
-                    InetAddress inetAddress = enumInetAddress.nextElement();
-                    if (inetAddress.isSiteLocalAddress()) {
-                        addr = inetAddress.getHostAddress();
-                    }
-
-                }
-
-            }
-
-        } catch (SocketException e) {
-            e.printStackTrace();
-            ip += "Something Wrong! " + e.toString() + "\n";
-        }
-
-        return ip + addr;
-        */
-
-        // TODO for finding address in DCU
+        // This method filters through all the IP Addresses associated to the device and it's environment
+        //And finds the devices ACTUAL IP
         String ip = "My IP address is: ";
         String addr = "UNAVAILABLE";
         try {

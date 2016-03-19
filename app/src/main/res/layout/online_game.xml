@@ -16,22 +16,6 @@
         android:contentDescription="@string/chat_room_title_asc_description"
         />
 
-    <!--
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-
-    <Button
-        android:id="@+id/sign_out_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign Out"
-        android:visibility="gone" />
-    -->
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -94,36 +78,21 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_weight="1">
-
-        <EditText
-            android:id="@+id/laptop_ip_edit_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:hint="@string/server_ip_address_hint"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:layout_weight="1">
         <Button
             android:id="@+id/host_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/host_game_text_view"
-            android:onClick="hostChosen" />
+            android:onClick="hostChosen"
+            android:contentDescription="@string/host_button_asc_description"/>
 
         <Button
             android:id="@+id/join_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/join_game_text_view"
-            android:onClick="joinChosen" />
+            android:onClick="joinChosen"
+            android:contentDescription="@string/join_game_asc_description"/>
 
     </LinearLayout>
 
