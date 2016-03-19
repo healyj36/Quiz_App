@@ -45,7 +45,8 @@
             android:name=".OnlineStart"
             android:label="1v1 Game Mode"
             android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity
             android:name=".ServerActivity"
@@ -66,17 +67,30 @@
             android:name=".HostGame"
             android:label="Host Game - 1v1 Game Mode"
             android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:parentActivityName=".OnlineStart">
         </activity>
         <activity
             android:name=".JoinGame"
             android:label="Join Game - 1v1 Game Mode"
             android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:parentActivityName=".OnlineStart">
         </activity>
-
-        <meta-data android:name="com.google.android.gms.games.APP_ID"
-            android:value="@string/app_id" />
+        <activity
+            android:name=".ListHosts"
+            android:label="Join Game - 1v1 Game Mode"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".OnlineStart">
+        </activity>
+        <activity
+            android:name=".WaitForClient"
+            android:label="Host Game - 1v1 Game Mode"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".OnlineStart">
+        </activity>
     </application>
 
 </manifest>

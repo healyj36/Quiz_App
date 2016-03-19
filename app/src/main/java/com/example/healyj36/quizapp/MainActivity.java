@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
     public void goTo1v1(View view) {
         Intent view1v1 = new Intent(MainActivity.this, OnlineStart.class);
 
+        view1v1.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         // call activity to run and don't expect data to be sent back
         startActivity(view1v1);
     }

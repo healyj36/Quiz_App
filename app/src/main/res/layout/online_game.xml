@@ -35,13 +35,29 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
             android:id="@+id/online_game_mode_instructions"
-            android:text="@string/chat_room_instructions"/>
+            android:text="@string/online_game_instructions"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_5dp"
             android:id="@+id/online_game_mode_score"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_weight=".1">
+        <EditText
+            android:id="@+id/online_enter_name"
+            android:paddingLeft="@dimen/padding_5dp"
+            android:paddingRight="@dimen/padding_5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your nickname here"/>
 
     </LinearLayout>
 

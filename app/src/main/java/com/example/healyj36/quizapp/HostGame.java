@@ -49,6 +49,8 @@ public class HostGame extends Activity {
     private boolean isFirstQuestion = true;
     private int hostScore = 0;
     private int clientScore = 0;
+    String hostNickname;
+    String clientNickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class HostGame extends Activity {
 
         Bundle extras = getIntent().getExtras();
         // receive subject and number of questions from the previous activity
+        hostNickname = extras.getString("nicknameHostKey");
         String numberOfQuestionsString = "0";
         String subject = "0";
         if (extras != null) {
@@ -177,6 +180,7 @@ public class HostGame extends Activity {
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
+                clientNickname = dataInputStream.readUTF();
 
                 int i = 0;
                 //get question
@@ -318,13 +322,16 @@ public class HostGame extends Activity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            Intent returnIntent = new Intent();
-            //Return back to OnlineStart, send out some data to display the scores
-            returnIntent.putExtra("scoreKey", finalScores);
-            returnIntent.putExtra("numQuestionsKey", numberOfQuestions);
-            returnIntent.putExtra("wasHostKey", true);
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();
+            Intent returnScoresHost = new Intent(HostGame.this, OnlineStart.class);
+
+            returnScoresHost.putExtra("scoreKey", finalScores);
+            returnScoresHost.putExtra("numQuestionsKey", numberOfQuestions);
+            returnScoresHost.putExtra("wasHostKey", true);
+            returnScoresHost.putExtra("nicknameHostKey", hostNickname);
+            returnScoresHost.putExtra("nicknameClientKey", clientNickname);
+
+            returnScoresHost.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(returnScoresHost);
         }
     }
 

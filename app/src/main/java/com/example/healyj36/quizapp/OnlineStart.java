@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -20,6 +21,48 @@ public class OnlineStart extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.online_game);
         initCustomTypeFace();
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            // check if Bundle is null first
+            // will be null on first open
+            if(extras.isEmpty()) {
+                // check if Bundle is empty
+                // will be empty when escaping from host / join game
+                String scoreText = extras.getString("scoreKey");
+                scoreText = scoreText.substring(1, scoreText.length() - 1);
+                String[] scores = scoreText.split(", ");
+
+                boolean wasHost = extras.getBoolean("wasHostKey", false);
+
+                int numQuestions = extras.getInt("numQuestionsKey", 0);
+                // 0 here is the default value
+                // if the number of questions cant be received from the intent
+                // numQuestions will be 0
+
+                int yourScore, theirScore;
+                String str = "The game is finished.\n";
+                str += "There was " + numQuestions + " questions.\n";
+                String yourName;
+                String theirName;
+                if (wasHost) {
+                    yourName = extras.getString("nicknameHostKey");
+                    yourScore = Integer.parseInt(scores[0]);
+                    theirName = extras.getString("nicknameClientKey");
+                    theirScore = Integer.parseInt(scores[1]);
+                } else {
+                    yourName = extras.getString("nicknameClientKey");
+                    yourScore = Integer.parseInt(scores[1]);
+                    theirName = extras.getString("nicknameHostKey");
+                    theirScore = Integer.parseInt(scores[0]);
+                }
+
+                str += "\"" + yourName + "\" correctly answered " + yourScore + " questions.\n";
+                str += "\"" + theirName + "\" correctly answered " + theirScore + " questions.\n";
+                TextView a = (TextView) findViewById(R.id.online_game_mode_score);
+                a.setText(str);
+            }
+        }
 
         Spinner dropdown_subject = (Spinner) findViewById(R.id.spinner_subjects);
         ArrayList<String> subjects = DB_FUNC.getSubjects();
@@ -35,7 +78,7 @@ public class OnlineStart extends Activity {
                 int maxNumber = DB_FUNC.getNumberOfQuestionsBySubject(subjectName);
                 ArrayList<String> numbers = new ArrayList<>();
                 numbers.add("All Questions"); // first element = "All Questions"
-                for(int i=(maxNumber-1); i>0; i--){
+                for (int i = (maxNumber - 1); i > 0; i--) {
                     String elem = String.valueOf(i); // convert number to string
                     numbers.add(elem); // add it to ArrayList
                 }
@@ -43,6 +86,7 @@ public class OnlineStart extends Activity {
                 ArrayAdapter<String> adapter2 = new ArrayAdapter<>(OnlineStart.this, android.R.layout.simple_spinner_dropdown_item, numbers);
                 dropdown_number.setAdapter(adapter2);
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
                 // do nothing
             }
@@ -58,60 +102,24 @@ public class OnlineStart extends Activity {
     public void hostChosen(View view) {
         Spinner spinner1 = (Spinner) findViewById(R.id.spinner_subjects);
         Spinner spinner2 = (Spinner) findViewById(R.id.number_of_questions);
-        Intent hostGame = new Intent(OnlineStart.this, HostGame.class);
+        EditText nickname = (EditText) findViewById(R.id.online_enter_name);
 
-        final int result = 1; // signal
+        Intent hostGame = new Intent(OnlineStart.this, WaitForClient.class);
 
         hostGame.putExtra("subjectKey", spinner1.getSelectedItem().toString());
         hostGame.putExtra("numberOfQuestionsKey", spinner2.getSelectedItem().toString());
+        hostGame.putExtra("nicknameHostKey", nickname.getText().toString());
 
-        // call activity to run and retrieve data back
-        startActivityForResult(hostGame, result);
+        hostGame.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(hostGame);
     }
 
     public void joinChosen(View view) {
-        Intent joinGame = new Intent(OnlineStart.this, JoinGame.class);
+        Intent joinGame = new Intent(OnlineStart.this, ListHosts.class);
+        EditText nickname = (EditText) findViewById(R.id.online_enter_name);
+        joinGame.putExtra("nicknameClientKey", nickname.getText().toString());
 
-        final int result = 1; // signal
-
-        // call activity to run and retrieve data back
-        startActivityForResult(joinGame, result);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // return result from online game
-        // if host game returns
-        if (requestCode == 1) {
-            // resultCode == Activity.RESULT_OK, game finished cleanly
-            if (resultCode == Activity.RESULT_OK) {
-                String scoreText = data.getStringExtra("scoreKey");
-                scoreText = scoreText.substring(1, scoreText.length() - 1);
-                String[] scores = scoreText.split(", ");
-
-                boolean wasHost = data.getBooleanExtra("wasHostKey", false);
-
-                int numQuestions = data.getIntExtra("numQuestionsKey", 0);
-                // 0 here is the default value
-                // if the number of questions cant be received from the intent
-                // numQuestions will be 0
-
-                int yourScore, theirScore;
-                String str = "The game is finished.\n";
-                str += "There was " + numQuestions + " questions.\n";
-                if(wasHost) {
-                    yourScore=Integer.parseInt(scores[0]);
-                    theirScore=Integer.parseInt(scores[1]);
-                } else {
-                    yourScore=Integer.parseInt(scores[1]);
-                    theirScore=Integer.parseInt(scores[0]);
-                }
-
-                str += "You correctly answered " + yourScore + " questions.\n";
-                str += "Your opponent correctly answered " + theirScore + " questions.\n";
-                TextView a = (TextView) findViewById(R.id.online_game_mode_score);
-                a.setText(str);
-            }
-        }
+        joinGame.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(joinGame);
     }
 }

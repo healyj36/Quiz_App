@@ -34,7 +34,7 @@ public class AllQuestions extends ListActivity {
         if(allQuestionNames.size() != 0) {
             ListView lvQuestions = getListView();
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                     this,
                     android.R.layout.simple_list_item_1,
                     android.R.id.text1,allQuestionNames

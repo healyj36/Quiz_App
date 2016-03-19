@@ -34,17 +34,12 @@ public class JoinGame extends Activity {
     private int clientScore = 0;
 
     private boolean isFirstQuestion = true;
+    String clientNickname;
+    String hostNickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.join_game_activity);
-
-        editTextAddress = (EditText) findViewById(R.id.address);
-    }
-
-    // "connect" button pressed to start game
-    public void sendMessage(View view) {
         setContentView(R.layout.question_entry);
 
         ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
@@ -59,13 +54,14 @@ public class JoinGame extends Activity {
             opponent_progress.getProgressDrawable().setColorFilter(Color.parseColor("#AA8D00"), android.graphics.PorterDuff.Mode.MULTIPLY);
         }
 
-        // hide keyboard
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editTextAddress.getWindowToken(), 0);
+        Bundle extras = getIntent().getExtras();
+        String hostIp = extras.getString("hostIpKey");
+        clientNickname = extras.getString("nicknameClientKey");
+        hostNickname = extras.getString("nicknameHostKey");
 
-        MyClientTask myClientTask = new MyClientTask(editTextAddress.getText().toString());
+
+        MyClientTask myClientTask = new MyClientTask(hostIp);
         myClientTask.execute();
-
     }
 
     public class MyClientTask extends AsyncTask<Void, String, Void> {
@@ -92,6 +88,9 @@ public class JoinGame extends Activity {
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataInputStream = new DataInputStream(socket.getInputStream());
 
+                dataOutputStream.writeUTF(clientNickname);
+                dataOutputStream.flush();
+
                 //The first thing sent by the host is the number of questions
                 numQuestions = dataInputStream.readInt();
 
@@ -116,9 +115,6 @@ public class JoinGame extends Activity {
                 }
                 //after the loop, read the scores
                 scores = dataInputStream.readUTF();//hostscore, clientscore
-
-
-
 
             } catch (UnknownHostException e) {
                 e.printStackTrace();
@@ -155,13 +151,16 @@ public class JoinGame extends Activity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            Intent returnIntent = new Intent();
-            //Return back to OnlineStart, send out some data to display the scores
-            returnIntent.putExtra("scoreKey", scores);
-            returnIntent.putExtra("numQuestionsKey", numQuestions);
-            returnIntent.putExtra("wasHostKey", false);
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();
+            Intent returnScoresClient = new Intent(JoinGame.this, OnlineStart.class);
+
+            returnScoresClient.putExtra("scoreKey", scores);
+            returnScoresClient.putExtra("numQuestionsKey", numQuestions);
+            returnScoresClient.putExtra("wasHostKey", false);
+            returnScoresClient.putExtra("nicknameHostKey", hostNickname);
+            returnScoresClient.putExtra("nicknameClientKey", clientNickname);
+
+            returnScoresClient.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(returnScoresClient);
         }
 
         @Override
