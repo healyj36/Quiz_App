@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,10 +27,9 @@ public class OnlineStart extends Activity {
         if(extras != null) {
             // check if Bundle is null first
             // will be null on first open
-            if(extras.isEmpty()) {
-                // check if Bundle is empty
-                // will be empty when escaping from host / join game
-                String scoreText = extras.getString("scoreKey");
+            String scoreText = extras.getString("scoreKey");
+            // if scoreText is empty then the quiz finished unexpectedly
+            if (!scoreText.equals("")) {
                 scoreText = scoreText.substring(1, scoreText.length() - 1);
                 String[] scores = scoreText.split(", ");
 
@@ -100,26 +100,34 @@ public class OnlineStart extends Activity {
     }
 
     public void hostChosen(View view) {
-        Spinner spinner1 = (Spinner) findViewById(R.id.spinner_subjects);
-        Spinner spinner2 = (Spinner) findViewById(R.id.number_of_questions);
-        EditText nickname = (EditText) findViewById(R.id.online_enter_name);
+        EditText nNameEditText = (EditText) findViewById(R.id.online_enter_name);
+        if(!nNameEditText.getText().toString().equals("")) {
+            Spinner spinner1 = (Spinner) findViewById(R.id.spinner_subjects);
+            Spinner spinner2 = (Spinner) findViewById(R.id.number_of_questions);
 
-        Intent hostGame = new Intent(OnlineStart.this, WaitForClient.class);
+            Intent hostGame = new Intent(OnlineStart.this, WaitForClient.class);
 
-        hostGame.putExtra("subjectKey", spinner1.getSelectedItem().toString());
-        hostGame.putExtra("numberOfQuestionsKey", spinner2.getSelectedItem().toString());
-        hostGame.putExtra("nicknameHostKey", nickname.getText().toString());
+            hostGame.putExtra("subjectKey", spinner1.getSelectedItem().toString());
+            hostGame.putExtra("numberOfQuestionsKey", spinner2.getSelectedItem().toString());
+            hostGame.putExtra("nicknameHostKey", nNameEditText.getText().toString());
 
-        hostGame.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(hostGame);
+            hostGame.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(hostGame);
+        } else {
+            Toast.makeText(getApplicationContext(), "Please enter your nickname", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void joinChosen(View view) {
-        Intent joinGame = new Intent(OnlineStart.this, ListHosts.class);
-        EditText nickname = (EditText) findViewById(R.id.online_enter_name);
-        joinGame.putExtra("nicknameClientKey", nickname.getText().toString());
+        EditText nNameEditText = (EditText) findViewById(R.id.online_enter_name);
+        if(!nNameEditText.getText().toString().equals("")) {
+            Intent joinGame = new Intent(OnlineStart.this, ListHosts.class);
+            joinGame.putExtra("nicknameClientKey", nNameEditText.getText().toString());
 
-        joinGame.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(joinGame);
+            joinGame.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(joinGame);
+        } else {
+            Toast.makeText(getApplicationContext(), "Please enter your nickname", Toast.LENGTH_SHORT).show();
+        }
     }
 }

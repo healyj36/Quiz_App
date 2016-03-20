@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Quiz App</string>
-    <string name="app_id">471005621093</string>
 
-    <string name="allQuestions">All Questions</string>
 
     <string name="question_temp">que</string>
     <string name="option1_temp">op1</string>
@@ -24,7 +22,6 @@
 
     <string name="all_questions_text_view">All Questions</string>
 
-    <string name="settings_text_view">Settings</string>
 
     <string name="app_title_asc_description">Quiz App. Title</string>
     <string name="online_game_mode_asc_description">Play 1v1 Game Mode.</string>
@@ -37,11 +34,6 @@
     <string name="infinite_game_mode_start_asc_description">Click to Start Infinite Game Mode.</string>
     <string name="chat_room_title_asc_description">Chat room. Title</string>
 
-    <string name="signin_other_error">There was             // an issue with sign-in, please try again later.</string>
-    <string name="signin_failure">Unable to sign in.</string>
-
-    <string name="server_client_dialog_title">Server or Client</string>
-    <string name="server_client_dialog_message">Would you like to be the Server (host) or the client of this game?</string>
     <string name="client_button_text_view">Client</string>
     <string name="server_button_text_view">Server</string>
 
@@ -49,23 +41,24 @@
     <string name="chat_room_title">Chat Room</string>
     <string name="chat_room_instructions">Please select whether you would like to act as the server or client below.</string>
 
-    <string name="online_game_mode_description">In this game mode, you will play against a friend to see who can answer more questions correctly. One device can act as a host of the match and the opponent connects to them.</string>
+    <string name="online_game_mode_description">In this game mode, you will play against a friend to see who can answer more questions correctly. One device can act as a host of the match and the opponent connects to them. The host chooses the subject and the number of questions for the quiz.</string>
     <string name="online_game_instructions">Please enter your name &amp; select whether you would like to act as the server or client below.</string>
     <string name="host_game_text_view">Host Game</string>
     <string name="join_game_text_view">Join Game</string>
     <string name="online_join_button_view">Connect…</string>
-    <string name="chat_client_message_hint">Type Your Message Here</string>
     <string name="chat_server_message_hint">Type your message here</string>
-    <string name="chat_client_address_hint">Server Address</string>
     <string name="online_host_address_hint">Server Address</string>
     <string name="chat_client_send_button">Send…</string>
 
-    <string name="server_ip_auto_fill">136.206.254.6</string>
-    <string name="server_ip_address_hint">Server IP Address</string>
+
     <string name="server_button_asc_description">Act as server</string>
     <string name="client_button_asc_description">Act as client</string>
     <string name="send_message_asc_description">Send Message.</string>
     <string name="host_button_asc_description">Host Game.</string>
     <string name="join_game_asc_description">Join Game.</string>
+    <string name="connect_to_server_asc_description">Connect to server.</string>
+
+    <string name="online_enter_name_hint">Enter your nickname here</string>
+    <string name="host_connecting_to_server">Connecting to server…</string>
 
 </resources>

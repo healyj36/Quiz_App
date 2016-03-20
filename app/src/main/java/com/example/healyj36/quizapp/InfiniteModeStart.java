@@ -25,11 +25,6 @@ public class InfiniteModeStart extends Activity {
         setContentView(R.layout.infinite_start);
         initCustomTypeFace();
 
-        try {
-            DB_FUNC.createDatabase();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         Spinner dropdown_subject = (Spinner) findViewById(R.id.spinner_subjects);
         ArrayList<String> subjects = DB_FUNC.getSubjects();
@@ -38,37 +33,37 @@ public class InfiniteModeStart extends Activity {
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjects);
         dropdown_subject.setAdapter(adapter1);
 
-        final Spinner dropdown_number = (Spinner) findViewById(R.id.number_of_questions);
+
 
         dropdown_subject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String subjectName = parent.getItemAtPosition(position).toString();
                 int maxNumber = DB_FUNC.getNumberOfQuestionsBySubject(subjectName);
-                ArrayList<String> numbers = new ArrayList<>();
-                numbers.add("All Questions"); // first element = "All Questions"
-                for(int i=(maxNumber-1); i>0; i--){
-                    String elem = String.valueOf(i); // convert number to string
-                    numbers.add(elem); // add it to ArrayList
-                }
 
-                ArrayAdapter<String> adapter2 = new ArrayAdapter<>(InfiniteModeStart.this, android.R.layout.simple_spinner_dropdown_item, numbers);
-                dropdown_number.setAdapter(adapter2);
+                TextView numQuestionsView = (TextView) findViewById(R.id.infinite_game_mode_number_of_questions_text_view);
+                if(subjectName.equals("All Subjects")) {
+                    String numQuestions = "There are " + maxNumber + " questions in total";
+                    numQuestionsView.setText(numQuestions);
+                } else {
+                    String numQuestions = "There are " + maxNumber + " questions in the subject " + subjectName;
+                    numQuestionsView.setText(numQuestions);
+                }
             }
             public void onNothingSelected(AdapterView<?> parent) {
                 // do nothing
             }
         });
+
     }
 
     public void startInfiniteGame(View view) {
         Spinner spinner1 = (Spinner) findViewById(R.id.spinner_subjects);
-        Spinner spinner2 = (Spinner) findViewById(R.id.number_of_questions);
 
         Intent startGame = new Intent(InfiniteModeStart.this, InfiniteGame.class);
 
         final int requestCode = 1; // signal
+
         startGame.putExtra("subjectKey", spinner1.getSelectedItem().toString());
-        startGame.putExtra("numberOfQuestionsKey", spinner2.getSelectedItem().toString());
 
         // call activity to run and retrieve data back
         startActivityForResult(startGame, requestCode);

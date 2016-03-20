@@ -1,16 +1,14 @@
 package com.example.healyj36.quizapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,6 +17,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.UUID;
 
 /**
  * Created by Jordan on 11/03/2016.
@@ -29,13 +28,14 @@ public class JoinGame extends Activity {
 
     private String clientChoice;
 
-    private EditText editTextAddress;
     private int hostScore = 0;
     private int clientScore = 0;
 
     private boolean isFirstQuestion = true;
     String clientNickname;
     String hostNickname;
+    private ProgressBar timer;
+    private MyCountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +44,16 @@ public class JoinGame extends Activity {
 
         ProgressBar local_player_progress = (ProgressBar) findViewById(R.id.local_player_progress);
         ProgressBar opponent_progress = (ProgressBar) findViewById(R.id.opponent_progress);
+        timer = (ProgressBar) findViewById(R.id.countdown_timer);
+        local_player_progress.getProgressDrawable().setColorFilter(Color.parseColor("#008800"), android.graphics.PorterDuff.Mode.MULTIPLY);
+        opponent_progress.getProgressDrawable().setColorFilter(Color.parseColor("#AA8D00"), android.graphics.PorterDuff.Mode.MULTIPLY);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             // for lollipop and above versions. as this method only works for lollipop or above
-            local_player_progress.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#008800")));
-            opponent_progress.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#AA8D00")));
+            // set colour of bar to green (#00cc00)
+            timer.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#00cc00")));
         } else {
-            // do something for devices running an SDK lower than lollipop
-            local_player_progress.getProgressDrawable().setColorFilter(Color.parseColor("#008800"), android.graphics.PorterDuff.Mode.MULTIPLY);
-            opponent_progress.getProgressDrawable().setColorFilter(Color.parseColor("#AA8D00"), android.graphics.PorterDuff.Mode.MULTIPLY);
+            // set colour of bar to green (#00cc00)
+            timer.getProgressDrawable().setColorFilter(Color.parseColor("#00cc00"), android.graphics.PorterDuff.Mode.SRC_IN);
         }
 
         Bundle extras = getIntent().getExtras();
@@ -59,6 +61,7 @@ public class JoinGame extends Activity {
         clientNickname = extras.getString("nicknameClientKey");
         hostNickname = extras.getString("nicknameHostKey");
 
+        countDownTimer = new MyCountDownTimer(10000, 500);
 
         MyClientTask myClientTask = new MyClientTask(hostIp);
         myClientTask.execute();
@@ -94,10 +97,14 @@ public class JoinGame extends Activity {
                 //The first thing sent by the host is the number of questions
                 numQuestions = dataInputStream.readInt();
 
+                // start timer
+
                 for(int i = 0; i < numQuestions; i++) {
                     //read the question data
                     questionWithOptions = dataInputStream.readUTF();
-                    //display it
+                    countDownTimer.start();
+
+                    //display question data
                     publishProgress(questionWithOptions);
                     // get clientChoice from button press
                     // writeUTF(answer)
@@ -106,6 +113,7 @@ public class JoinGame extends Activity {
                     // Would prefer a better method than busy waiting
                     while (clientChoice == null) {
                     }
+
                     isFirstQuestion = false;
                     //writeout the answer
                     dataOutputStream.writeUTF(clientChoice);
@@ -160,6 +168,9 @@ public class JoinGame extends Activity {
             returnScoresClient.putExtra("nicknameClientKey", clientNickname);
 
             returnScoresClient.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+            countDownTimer.cancel();
+
             startActivity(returnScoresClient);
         }
 
@@ -178,7 +189,7 @@ public class JoinGame extends Activity {
 
             String qAnda = values[0];
             qAnda = qAnda.substring(1, qAnda.length() - 1);
-            String[] ary = qAnda.split(", ");
+            String[] ary = qAnda.split("##");
             String questionName = ary[0];
             String option1 = ary[1];
             String option2 = ary[2];
@@ -231,6 +242,14 @@ public class JoinGame extends Activity {
     public void getResponse(View view) {
         clientChoice = null;
         clientChoice = ((Button) view).getText().toString();
+        // pause timer
+        countDownTimer.cancel();
+        JoinGame.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                countDownTimer = new MyCountDownTimer(10000, 500);
+            }
+        });
     }
 
     @Override
@@ -242,6 +261,52 @@ public class JoinGame extends Activity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public class MyCountDownTimer extends CountDownTimer {
+        long millisLeft;
+
+        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            int progress = (int) (millisUntilFinished/1000);
+            millisLeft = millisUntilFinished;
+            timer.setProgress(timer.getMax() - progress);
+            // if there's 3 seconds (or less) left
+            // set colour of bar to red
+            if(progress < 3) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    // for lollipop and above versions. as this method only works for lollipop or above
+                    timer.setProgressTintList(ColorStateList.valueOf(Color.RED));
+                } else {
+                    // do something for devices running an SDK lower than lollipop
+                    timer.getProgressDrawable().setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+                }
+            } else {
+                // else, set colour of bar to green
+                // (reset the color when the next answer appears)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    // for lollipop and above versions. as this method only works for lollipop or above
+                    timer.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#00cc00")));
+                } else {
+                    // do something for devices running an SDK lower than lollipop
+                    timer.getProgressDrawable().setColorFilter(Color.parseColor("#00cc00"), android.graphics.PorterDuff.Mode.SRC_IN);
+                }
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            // what happens when timer reaches zero
+            // generate random string as hosts choice
+            // this will never be the correct answer, will always return false
+            UUID randomString = UUID.randomUUID();
+            // e.g. 067e6162-3b6f-4ae2-a171-2470b63dff00
+            clientChoice = randomString.toString();
         }
     }
 }

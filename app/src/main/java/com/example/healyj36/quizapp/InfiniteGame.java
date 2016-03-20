@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,27 +38,15 @@ public class InfiniteGame extends Activity {
         lpp.setVisibility(View.GONE);
         op.setVisibility(View.GONE);
 
-        try {
-            DB_FUNC.createDatabase();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         Bundle extras = getIntent().getExtras();
         // receive subject and number of questions from the previous activity
         String numberOfQuestionsString = "0";
         String subject = "0";
         if (extras != null) {
-            numberOfQuestionsString = extras.getString("numberOfQuestionsKey");
             subject = extras.getString("subjectKey");
-            // if user chose all questions...
-            if(numberOfQuestionsString.equals("All Questions")) {
-                // ...get the total number of questions in the database
-                numberOfQuestionsString = String.valueOf(DB_FUNC.getTotalNumberOfQuestions(subject));
-            }
         }
 
-        numberOfQuestions = Integer.parseInt(numberOfQuestionsString);
+        numberOfQuestions = DB_FUNC.getTotalNumberOfQuestions(subject);
         //pull n questions from the database
         allQuestions = DB_FUNC.getQuestionsRandom(numberOfQuestions, subject);
 

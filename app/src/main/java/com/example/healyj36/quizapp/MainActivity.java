@@ -5,12 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import java.io.IOException;
+
 
 public class MainActivity extends Activity {
+    final private DBFunc DB_FUNC = new DBFunc(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        try {
+            DB_FUNC.createDatabase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void goTo1v1(View view) {

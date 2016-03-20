@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ClientActivity"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <TextView
-        android:id="@+id/wait_for_client_text_view"
+        android:id="@+id/connect_to_server_text_view"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:textSize="@dimen/sub_title_size"
-        android:text="Waiting for client to join..."
+        android:text="@string/host_connecting_to_server"
         android:gravity="center|center_horizontal"/>
 
 </LinearLayout>

@@ -23,21 +23,17 @@ public class AllQuestions extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.all_questions);
 
-        try {
-            DB_FUNC.createDatabase();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         ArrayList<String> allQuestionNames = DB_FUNC.getAllQuestionNames();
+
         // Populate ListView with all questions in db
         if(allQuestionNames.size() != 0) {
             ListView lvQuestions = getListView();
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     this,
                     android.R.layout.simple_list_item_1,
-                    android.R.id.text1,allQuestionNames
+                    android.R.id.text1,
+                    allQuestionNames
             );
 
             lvQuestions.setAdapter(adapter);

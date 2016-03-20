@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ServerActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -19,7 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/chat_client_send_button"
-        android:onClick="sendMessage"/>
+        android:onClick="sendMessage"
+        android:contentDescription="@string/send_message_asc_description"/>
 
     <TextView
         android:id="@+id/infoIp"

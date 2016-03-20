@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context="com.example.healyj36.quizapp.ChatRoom">
+    tools:context=".ChatRoom">
 
     <TextView
         android:layout_height="wrap_content"

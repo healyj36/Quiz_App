@@ -40,7 +40,7 @@ public class DBFunc extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //DB_VERSION++;
+        DB_VERSION++;
     }
 
     @Override
